@@ -43,3 +43,4 @@ The course uses compact visualizations for nominal grid precision and terrain ef
 - 2026-08-31 — Routed the owned Stagecraft fonts through `/public/fonts` because PostCSS flattens the imported stylesheet. This preserves the self-hosted type decision in the Sites build.
 - 2026-08-31 — Added a site-wide social card and bound its metadata to the verified production origin after the initial private deployment resolved that URL.
 - 2026-08-31 — Expanded Day 1 into an eight-module beginner foundation; corrected the orientation lesson to distinguish grid, true, and magnetic north; added Canadian primary-source links, two teaching visualizations, scale/distance practice, terrain forms, bearing concepts, route construction, and a progressive field-practice plan.
+- 2026-08-31 — Added a public-repository README so the validated course can be cloned and run independently of the temporary local preview.
