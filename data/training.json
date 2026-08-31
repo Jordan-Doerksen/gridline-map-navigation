@@ -1,51 +1,78 @@
 {
+  "modules": [
+    { "number": "00", "id": "brief", "short": "Brief", "title": "Read the whole sheet", "duration": "10 min" },
+    { "number": "01", "id": "practice", "short": "Grid", "title": "Grid references", "duration": "25 min" },
+    { "number": "02", "id": "scale", "short": "Scale", "title": "Scale and distance", "duration": "20 min" },
+    { "number": "03", "id": "contours", "short": "Terrain", "title": "Contours and landforms", "duration": "25 min" },
+    { "number": "04", "id": "north", "short": "North", "title": "Direction and compass", "duration": "25 min" },
+    { "number": "05", "id": "route", "short": "Route", "title": "Build a route", "duration": "20 min" },
+    { "number": "06", "id": "field", "short": "Field", "title": "Safe field rehearsal", "duration": "30 min" },
+    { "number": "07", "id": "check", "short": "Check", "title": "Foundation check", "duration": "10 min" }
+  ],
+  "mapAudit": [
+    { "label": "Identity", "detail": "Sheet name, number, edition, and publication or update date" },
+    { "label": "Measurement", "detail": "Representative fraction, scale bar, units, and contour interval" },
+    { "label": "Position", "detail": "Grid system, zone or designators, and map datum" },
+    { "label": "Direction", "detail": "True, grid, and magnetic north diagram with dated declination information" },
+    { "label": "Language", "detail": "Legend, conventional signs, colours, and adjoining-sheet notes" }
+  ],
   "gridExercises": [
-    {
-      "id": "cabin",
-      "label": "Survey cabin",
-      "symbol": "CAB",
-      "easting": "34",
-      "northing": "51",
-      "mapX": 385,
-      "mapY": 265,
-      "clue": "Find the red target inside one grid square. Name the line on its left, then the line below it."
-    },
-    {
-      "id": "shelter",
-      "label": "Pine shelter",
-      "symbol": "SH",
-      "easting": "33",
-      "northing": "50",
-      "mapX": 295,
-      "mapY": 355,
-      "clue": "The shelter sits west of the stream and north of the trail bend."
-    },
-    {
-      "id": "bridge",
-      "label": "Footbridge",
-      "symbol": "BR",
-      "easting": "36",
-      "northing": "52",
-      "mapX": 565,
-      "mapY": 175,
-      "clue": "Look where the trail crosses the blue watercourse."
-    },
-    {
-      "id": "trig",
-      "label": "Trig point",
-      "symbol": "TP",
-      "easting": "32",
-      "northing": "53",
-      "mapX": 205,
-      "mapY": 85,
-      "clue": "The trig point is on the highest closed contour in the northwest."
-    }
+    { "id": "cabin", "label": "Survey cabin", "symbol": "CAB", "easting": "34", "northing": "51", "mapX": 385, "mapY": 265, "clue": "Find the red target inside one grid square. Name the line on its left, then the line below it." },
+    { "id": "shelter", "label": "Pine shelter", "symbol": "SH", "easting": "33", "northing": "50", "mapX": 295, "mapY": 355, "clue": "The shelter sits west of the stream and north of the trail bend." },
+    { "id": "bridge", "label": "Footbridge", "symbol": "BR", "easting": "36", "northing": "52", "mapX": 565, "mapY": 175, "clue": "Look where the trail crosses the blue watercourse." },
+    { "id": "trig", "label": "Trig point", "symbol": "TP", "easting": "32", "northing": "53", "mapX": 205, "mapY": 85, "clue": "The trig point is on the highest closed contour in the northwest." }
+  ],
+  "precisionLevels": [
+    { "figures": "4 figures", "example": "3451", "sideMetres": 1000, "meaning": "identifies a 1 km square" },
+    { "figures": "6 figures", "example": "347516", "sideMetres": 100, "meaning": "identifies a nominal 100 m square" },
+    { "figures": "8 figures", "example": "34725168", "sideMetres": 10, "meaning": "identifies a nominal 10 m square" }
+  ],
+  "scales": [
+    { "value": 50000, "label": "1:50 000", "metresPerCm": 500 },
+    { "value": 250000, "label": "1:250 000", "metresPerCm": 2500 }
+  ],
+  "terrainFeatures": [
+    { "name": "Hill", "read": "Closed contours with elevation increasing inward." },
+    { "name": "Depression", "read": "Closed contours with hachures or other legend-defined depression marks." },
+    { "name": "Valley", "read": "Contour bends usually point uphill; water often occupies the low line." },
+    { "name": "Spur", "read": "A tongue of higher ground projecting from a ridge; contour bends point downhill." },
+    { "name": "Ridge", "read": "A long crest of high ground with slopes falling away on both sides." },
+    { "name": "Saddle", "read": "A low pass between two higher areas, shaped like a shallow hourglass." }
+  ],
+  "elevationProfile": [
+    { "distance": 0.0, "elevation": 220 }, { "distance": 0.4, "elevation": 235 },
+    { "distance": 0.8, "elevation": 270 }, { "distance": 1.2, "elevation": 315 },
+    { "distance": 1.6, "elevation": 342 }, { "distance": 2.0, "elevation": 330 },
+    { "distance": 2.4, "elevation": 295 }, { "distance": 2.8, "elevation": 280 }
+  ],
+  "routeSequence": [
+    { "term": "Handrail", "use": "A linear feature that keeps you organized while you move." },
+    { "term": "Checkpoint", "use": "A feature you expect to confirm along the route." },
+    { "term": "Attack point", "use": "An obvious, close feature from which the final approach begins." },
+    { "term": "Catching feature", "use": "A feature beyond the destination that tells you if you went too far." }
   ],
   "fieldRoutine": [
-    "Orient the map so map north matches ground north.",
-    "Locate yourself using two or more known features.",
-    "Choose a clear handrail such as a trail, ridge, or stream.",
-    "Set a catching feature beyond the destination.",
-    "Confirm the route as the terrain changes."
+    "Audit the sheet: date, scale, legend, grid or datum, contour interval, and declination information.",
+    "Orient the map using known ground features or the approved compass method for that map.",
+    "Locate yourself using two or more reliable features.",
+    "Plan a route with a handrail, checkpoints, an attack point, and a catching feature.",
+    "Estimate distance and time; identify decision points and a turnaround condition.",
+    "Move checkpoint to checkpoint and confirm position whenever the terrain changes.",
+    "If the map and ground stop agreeing, halt, observe, and re-establish position before continuing."
+  ],
+  "practiceLadder": [
+    { "level": "Table", "task": "Read a real map margin, identify ten symbols, and plot grid references indoors." },
+    { "level": "Park", "task": "Walk a familiar, permitted loop with a companion and confirm obvious features." },
+    { "level": "Course", "task": "Add bearings and pace checks under qualified instruction on a controlled route." }
+  ],
+  "foundationChecks": [
+    "I read eastings first and northings second.",
+    "I can explain what four-, six-, and eight-figure precision means.",
+    "I check scale and contour interval before measuring or judging terrain.",
+    "I can distinguish grid, true, and magnetic north.",
+    "I use the map's current declination information instead of a memorized number.",
+    "I can name the major terrain forms from contour patterns.",
+    "I can build a route around handrails, checkpoints, an attack point, and a catching feature.",
+    "I stop and re-establish position when the map and ground disagree."
   ]
 }
