@@ -29,3 +29,4 @@ Practice state is held in the page session. There is no account, cloud storage, 
 - 2026-08-31 — Initial Day 1 lesson architecture and Stagecraft v2 adoption recorded before implementation.
 - 2026-08-31 — Reworded one nested comment in the owned `base.css` copy so the Sites PostCSS pipeline can parse it. No selector or rendered behaviour changed.
 - 2026-08-31 — Routed the owned Stagecraft fonts through `/public/fonts` because PostCSS flattens the imported stylesheet. This preserves the self-hosted type decision in the Sites build.
+- 2026-08-31 — Added a site-wide social card and bound its metadata to the verified production origin after the initial private deployment resolved that URL.
