@@ -1,0 +1,351 @@
+/* ============================================================================
+   stagecraft-v2 / tokens.css — THE CONTROL PANEL
+   ----------------------------------------------------------------------------
+   Every tweakable value in the template lives here. Nothing downstream invents
+   a colour, a duration, a radius, or a shadow. If you want to change how the
+   system looks, you change this file and nothing else.
+
+   Load order:  tokens.css → base.css → components.css → motion.css
+
+   PALETTE — "Drafting Paper" (DECISIONS.md D-005, 2026-08-28)
+   Technical pen on cool drafting paper. White sheets sit ON the paper, so the
+   page has two grounds, not one, and elevation is real rather than implied by
+   a hairline.
+
+   MEASURED CONTRAST — computed, not estimated.
+     on the paper ground #EFF2F6 : ink 16.1:1 · signal 7.1:1 · muted 6.3:1
+                                   secondary 6.1:1 · dim 4.6:1 · border 3.1:1
+     on the white sheet  #FFFFFF : ink 18.1:1 · signal 8.0:1 · muted 7.0:1
+                                   secondary 6.9:1 · dim 5.2:1 · border 3.5:1
+
+   THERE IS A THIRD GROUND, and measuring only two is how it went unchecked:
+     on --paper-deep     #E7EBF1 : ink 15.08 · signal 6.64 · muted 5.88
+                                   secondary 5.73 · dim 4.34 (FAILS) ·
+                                   line 2.90 · line-soft 1.28
+   --paper-deep is the footer, the segment track and the meter bed. Two rules
+   follow from it, both found by the 2026-08-28 audit:
+     - --ink-dim must NOT carry normal text on this ground (4.34:1 < 4.5:1).
+       The colophon used it and now uses --muted.
+     - --line-soft is invisible here (1.28:1). A border that must be seen on
+       this ground uses --line.
+   AA clears on all three grounds for body text, large text, and UI borders.
+
+   A NOTE ON THE DARK COUNTERPART: the hook exists at the bottom of this file
+   but is NOT tuned. It is scaffolding, not a theme. Do not ship a page on it
+   until its ratios are measured — see Q-3 in DECISIONS.md.
+   ============================================================================ */
+
+:root{
+
+  /* ==========================================================================
+     1 · GROUNDS — the paper, and the sheets that sit on it
+     ========================================================================== */
+  --paper:            #EFF2F6;  /* page ground — cool drafting paper          */
+  --paper-deep:       #E7EBF1;  /* recessed: footers, tracks, meter beds      */
+  --surface:          #FFFFFF;  /* the sheet — cards, panels, dialogs         */
+  --surface-hover:    #F4F7FB;  /* row + card hover wash                      */
+
+  /* the drafting grid. Gradients only — no image, nothing to fail to load. */
+  --grid-minor:       #E3E9F1;  /* 24px ruling                                */
+  --grid-major:       #D3DCE8;  /* 96px ruling                                */
+  --grid-minor-step:  24px;
+  --grid-major-step:  96px;
+
+  /* ==========================================================================
+     2 · INK — text, in three weights of presence
+     ========================================================================== */
+  --ink:              #0F1720;  /* body + headings. near-black, blue cast     */
+  --muted:            #4E5A68;  /* secondary text, kickers, descriptions      */
+  --ink-dim:          #626E7C;  /* retired / closed / deliberately quiet      */
+
+  /* ==========================================================================
+     3 · SIGNAL — drafting blue. ONE primary accent, and it does one job:
+         it marks what is live, what is a link, and where focus is.
+     ========================================================================== */
+  --signal:           #0D4FA0;
+  --signal-deep:      #093C7C;  /* hover + pressed on solid fills             */
+  --signal-tint:      #E6EDF9;  /* wash: active chip bed, tick field          */
+  --on-signal:        #FFFFFF;  /* text on a solid signal fill                */
+
+  /* ==========================================================================
+     4 · SECONDARY — red pencil. Correction and attention ONLY.
+         It is never decorative and never a second brand colour.
+         Using it for anything other than attention is a design bug.
+         ========================================================================== */
+  --secondary:        #A82E10;
+  --secondary-deep:   #8C2409;
+  --secondary-tint:   #FBEDE9;
+  --on-secondary:     #FFFFFF;
+
+  /* ==========================================================================
+     4b · STATUS INK — green pencil. The BUILT status, and nothing else.
+     --------------------------------------------------------------------------
+     Named narrowly ON PURPOSE. The audit of 2026-08-28 found `.sc-state--built`
+     borrowing --secondary, which §4 above reserves for correction and attention
+     and calls a design bug in any other use. The rule was right; the status had
+     nowhere else to go. A token named --status-built cannot be borrowed for
+     decoration the way a token named --secondary invites.
+
+     Drafting convention: blue draws, red corrects, green approves. BUILT means
+     finished and checked but not yet live, which is what a green pencil marks.
+
+     MEASURED — 6.35:1 on --paper-deep, the tightest of the three grounds:
+       paper #EFF2F6 6.77:1 · sheet #FFFFFF 7.60:1 · deep #E7EBF1 6.35:1
+     That sits beside --signal (6.64:1 on deep) so the statuses read as one
+     family. Colour is never the only carrier: each status also has its own
+     ::before marker shape and its own text label, so all four survive
+     greyscale and colour-blindness.
+     ========================================================================== */
+  --status-built:     #14603A;
+
+  /* ==========================================================================
+     5 · RULES — three weights, and they are not interchangeable
+     ========================================================================== */
+  --line:             #7E8B9A;  /* functional: control + card borders (3:1+)  */
+  --line-strong:      #6F7C8C;  /* emphasis: section heads, footer top        */
+  /* RAISED from #C9D2DE (1.36:1) on 2026-08-30. At that value a divider was only
+     1.10x the 96px ruling it sits among, so on the drafting grid it read as one
+     more rule rather than as structure. Now 2.00:1, which is 1.62x the ruling.
+     Same defect the dark ground had in a louder form — see D-010. */
+  --line-soft:        #A3AEBC;  /* decorative dividers ONLY — never a border
+                                   that has to be perceivable to be usable    */
+
+  /* ==========================================================================
+     6 · DISABLED — must read as unavailable, not as low-contrast text
+     ========================================================================== */
+  --disabled-bg:      #DEE3EA;
+  --disabled-ink:     #838F9D;
+
+  /* ==========================================================================
+     7 · ELEVATION — cool-tinted, never pure black. Two real levels plus press.
+     ========================================================================== */
+  --shadow-rgb:       20 32 46;
+  --shadow-1: 0 1px 1px rgb(var(--shadow-rgb) / .05),
+              0 4px 12px rgb(var(--shadow-rgb) / .07);   /* resting sheet     */
+  --shadow-2: 0 2px 3px rgb(var(--shadow-rgb) / .06),
+              0 14px 28px rgb(var(--shadow-rgb) / .12);  /* lifted / hovered  */
+  --shadow-press: 0 1px 1px rgb(var(--shadow-rgb) / .10);
+
+  /* ==========================================================================
+     8 · TYPE — A PLEX SYSTEM UNDER ONE SIGNATURE. Q-2 closed 2026-08-30 by D-009.
+
+         --body and --mono are IBM Plex, drawn for technical documentation, which
+         is the register this palette imitates. They are one family by one hand,
+         and that is the part that earns its keep: a page like this sets a token
+         name, a status and a row number in the mono dozens of times, inline with
+         the sentence around them. Siblings sit together. Strangers do not.
+
+         --display is SPACE GROTESK, and it is deliberately not from that family.
+         The display slot is the one place a system permits a voice of its own —
+         a headline is read once, a paragraph a thousand times — and this is the
+         face that makes the template read as the owner's rather than as anyone's.
+         It was chosen over five alternatives rendered in place on this ground,
+         including the condensed Plex cut that would have made the set uniform.
+         Uniform was available and was not picked, which is the whole point.
+
+         The pairing is not a compromise between two trios. Plex handles every
+         job where the reader must not notice the type; Space Grotesk handles the
+         one job where they should.
+         ========================================================================== */
+  --display: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+  --body:    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Fluid with HARD bounds. A clamp without a ceiling is how a headline ends
+     up eleven inches tall on a wide monitor. */
+  --t-stage:   clamp(2.6rem, 7.4vw, 6.4rem);   /* one statement per page      */
+  --t-chapter: clamp(1.8rem, 4.2vw, 3.4rem);   /* chapter / section titles    */
+  --t-section: clamp(1.25rem, 2.4vw, 1.75rem); /* section heads               */
+  --t-index:   clamp(1.05rem, 1.9vw, 1.4rem);  /* row names, card titles      */
+  /* RESIZED with the type change (D-009), because a px size is not an apparent
+     size. Measured at 100px on the paper ground, ascent of "x":
+         Inter 54  ->  IBM Plex Sans 52          ratio 1.0385
+         JetBrains Mono 55  ->  IBM Plex Mono 52 ratio 1.0577
+     Left alone, every body and label size on the site would have shrunk by
+     that much on the day the faces changed, which is a regression nobody asked
+     for and nobody would have been able to name. The three sizes below are the
+     old ones multiplied through and rounded to the nearest half pixel.
+
+     The mono ADVANCE is unchanged: both faces are 0.6em monospace, measured at
+     60 per 100px. So every ch-based width, every column of figures and every
+     --measure holds exactly where it was. The mono swap is metrically free. */
+  --t-body:    clamp(15.5px, 1.04vw, 17px);
+  --t-small:   14px;
+  --t-label:   11.5px;                          /* mono labels, status, meta  */
+
+  --lh-tight:  1.05;   /* display */
+  --lh-snug:   1.35;   /* headings, card titles */
+  --lh-body:   1.6;    /* running text */
+
+  --track-label: .18em;  /* letter-spacing for uppercase mono labels */
+  /* This token follows the DISPLAY face, and only the display face. It was
+     briefly halved to -.01em while the display was Plex Sans Condensed, which is
+     already narrow and closes its counters under negative tracking. The display
+     is Space Grotesk again, a wide geometric face that genuinely does need
+     pulling in, so the value goes back with it. Judged on four rendered values
+     (-.02, -.01, 0, +.005) on the paper ground.
+     If the display face ever changes again, re-render these four. */
+  --track-tight: -.02em; /* tuned for Space Grotesk at --t-stage */
+
+  --underline-offset: 2px; /* link underlines. 4px reads detached at body size */
+  --print-ink:        #000000; /* print only. Screen ink is deliberately not
+                                  pure black; on paper it should be.          */
+
+  /* ==========================================================================
+     9 · MEASURE + SPACE
+     ========================================================================== */
+  --measure:        66ch;   /* running text never exceeds this            */
+  --measure-tight:  46ch;   /* ledes, captions, single-idea blocks        */
+  --maxw:           1200px; /* page container                             */
+  --gutter:         clamp(20px, 4.5vw, 72px);
+
+  /* composition — read by compose.css only (D-012) */
+  --rail:           clamp(140px, 15vw, 210px);
+                            /* narrative_rail column. Wide enough for a two-word
+                               chapter label at --t-label without wrapping,
+                               narrow enough that it never rivals the body.    */
+  --stage-cap:      88vh;   /* viewport_stage ceiling. The bible's "do not
+                               consume multiple empty viewports", as a number.
+                               ASSERTED, NOT APPLIED: compose.css deliberately
+                               sets no max-block-size, because a capped centred
+                               stage escapes its box in both directions at short
+                               viewports. tests/vcompose.mjs is what holds it. */
+  --peer-min:       260px;  /* smallest a peer may get before the grid rewraps */
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 72px;
+  --sp-9: clamp(56px, 10vh, 120px);   /* band / chapter separation */
+
+  /* ==========================================================================
+     10 · SHAPE
+     ========================================================================== */
+  --r-sm:   4px;    /* tags, chips, small controls */
+  --r-md:   8px;    /* buttons, inputs             */
+  --r-lg:   12px;   /* cards, panels               */
+  --r-pill: 999px;
+
+  /* RULE WIDTHS. Closes one of the seven values the component layer wanted and
+     substituted for. It exists because tone alone could not separate a divider
+     from the drafting ruling it sits on: at 1px both are the same class of line
+     whatever their colour. ISO 128 separates line classes by WIDTH, which is the
+     answer the subject supplies. Ruling stays the thinnest thing on the page. */
+  --rule-w:      1px;             /* dividers inside a plate */
+  --rule-w-emph: 2px;             /* section rules, the footer edge */
+
+  --tick-size:  10px;             /* corner registration marks on sheets */
+  --tick-color: var(--line);
+
+  /* ==========================================================================
+     11 · MOTION — three tiers, each with a job (DECISIONS.md D-002).
+          There is no ambient token here on purpose. Tier 3 lives in
+          motion.css behind an opt-in attribute and is OFF by default.
+          ========================================================================== */
+  --ease:        cubic-bezier(.2,.7,.3,1);
+  --ease-out:    cubic-bezier(.16,1,.3,1);
+
+  --m-confirm:   130ms;  /* TIER 1 · input feedback. must feel instant       */
+  --m-orient:    180ms;  /* TIER 1 · hover, focus, state orientation        */
+  --m-settle:    240ms;  /* TIER 1 · press release, panel settle            */
+  --m-reveal:    420ms;  /* TIER 2 · entrance, draw-in, blueprint reveal    */
+  --m-transit:   560ms;  /* TIER 2 · view / chapter transition              */
+
+  /* ==========================================================================
+     12 · FOCUS — one ring, everywhere, no exceptions
+     ========================================================================== */
+  --focus-ring:   2px;
+  --focus-offset: 3px;
+  --focus-color:  var(--signal);
+
+  /* ==========================================================================
+     13 · LAYERS — named so nothing gets a random z-index of 9999
+     ========================================================================== */
+  --z-base:    1;
+  --z-raised:  10;
+  --z-chrome:  40;
+  --z-veil:    50;
+  --z-dialog:  51;
+  --z-toast:   60;
+}
+
+/* ============================================================================
+   DARK COUNTERPART — GRAPHITE. Q-3 closed 2026-08-30 by D-010.
+   ----------------------------------------------------------------------------
+   A first-class second ground, not a flip of the first. Every value below was
+   SOLVED, not picked: each ink inherits its hue from the light ground and gets
+   its lightness from a binary search against a contrast target, and the targets
+   are the light ground's own measured ratios. The numbers in the comments are
+   computed from these hexes, so they cannot drift from them.
+
+   The vocabulary does not move. Blue draws, red corrects, green approves — the
+   same as the light ground, because someone who learns what red means on a light
+   page must not find it means something else on a dark one. The rejected palette
+   01 (Blueprint Cyan) used amber for attention, which is exactly why it was not
+   simply reused here.
+
+   --ink is NOT #FFFFFF, and that is deliberate. The light ink is 16.07:1, but it
+   is a near-black with a blue cast rather than black. Carrying 16:1 across forces
+   pure white, and pure white on a dark ground halates — the letterforms bloom and
+   long reading gets harder, which is the opposite of what a high ratio is for.
+   Held at 12.93:1 on the tightest ground, still past AAA, so the ink keeps the
+   cast that makes it the same ink.
+
+   OPT-IN, like the ambient motion tier. It answers [data-theme="dark"] on <html>
+   and nothing else — no prefers-color-scheme hook. D-005 chose a light ground
+   deliberately, and a page that flipped itself to dark because the OS said so
+   would be overriding that decision on every client page at once. Wiring
+   prefers-color-scheme is a page's choice to make, not the template's.
+   ============================================================================ */
+:root[data-theme="dark"]{
+  /* --- grounds ----------------------------------------------------------- */
+  --paper:           #12171D;     /* page ground */
+  --paper-deep:      #0C1015;     /* recessed: footers, tracks, beds */
+  --surface:         #1B2129;     /* the sheet */
+  --surface-hover:   #212933;     /* row + card hover wash */
+
+  /* --- the ruling. Quieter than the light ground's in absolute terms because
+         a dark ground shows a light line more readily than paper shows a dark one. */
+  --grid-minor:      #1C1F24;     /*  1.09 on the ground · 24px ruling */
+  --grid-major:      #24292E;     /*  1.23 on the ground · 96px ruling */
+
+  /* --- ink.  ratios below are: on --paper · on --paper-deep · on --surface
+         All three grounds, every time. The audit of 2026-08-28 was caused by
+         measuring two grounds and forgetting the third. */
+  --ink:             #E2E6EC;     /* 14.38 · 15.23 · 12.93  body + headings */
+  --muted:           #97A3B0;     /*  7.02 ·  7.43 ·  6.31  secondary text, kickers */
+  --ink-dim:         #808D9C;     /*  5.32 ·  5.64 ·  4.79  retired / closed */
+
+  /* --- signal, secondary, status --- hues inherited from the light ground so the
+         vocabulary survives the swap: blue draws, red corrects, green approves. */
+  --signal:          #7EAEEA;     /*  7.83 ·  8.30 ·  7.04  the one accent */
+  --secondary:       #E7856C;     /*  6.83 ·  7.24 ·  6.15  correction + attention ONLY */
+  --status-built:    #3CBD7D;     /*  7.52 ·  7.97 ·  6.76  BUILT, and nothing else */
+  --signal-deep:     #AACAF1;     /* hover/press on a solid fill */
+  --secondary-deep:  #EEA998;     /* hover/press on a solid fill */
+  --signal-tint:     #232F3E;     /* wash: active chip bed, tick field */
+  --secondary-tint:  #34292A;     /* attention band bed */
+  --on-signal:       #0F141B;     /*  8.04 on the fill */
+  --on-secondary:    #0A0E13;     /*  7.34 on the fill */
+
+  /* --- lines --- */
+  --line:            #5F6D7E;     /*  3.41 ·  3.61 ·  3.07  functional borders (3:1+) */
+  --line-strong:     #6A7C93;     /*  4.22 ·  4.47 ·  3.79  emphasis rules */
+  --line-soft:       #414A56;     /*  2.01 ·  2.12 ·  1.80  decorative dividers ONLY */
+
+  /* --- states + depth --- */
+  --disabled-bg:     #242930;
+  --disabled-ink:    #6B7683;     /*  3.17 on its own bed — deliberately reads off */
+  --focus-color:     #7EAEEA;     /* the focus ring is the signal, same as light */
+  --tick-color:      #5F6D7E;     /* corner registration marks */
+
+  /* A shadow is nearly invisible on a dark ground, so elevation here is carried
+     by --surface being lighter than --paper and by the border. The shadow stays
+     declared, at black, so a sheet still has a soft edge rather than none. */
+  --shadow-rgb:      0 0 0;
+}
+

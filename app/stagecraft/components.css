@@ -1,0 +1,1207 @@
+/* ============================================================================
+   stagecraft-v2 / components.css — THE PARTS
+   ----------------------------------------------------------------------------
+   The inventory from ARCHITECTURE.md, and nothing else. No page layout, no top
+   bar, no footer, no element defaults — base.css owns those. No entrance or
+   ambient animation — motion.css owns those.
+
+   Load order:  tokens.css → base.css → components.css → motion.css
+
+   THE RULE THIS FILE LIVES UNDER
+   Every colour, duration, radius, shadow and space is var(--token) from
+   tokens.css. The only literals here are structural: 0, 1px hairlines, 100%,
+   50%, percentages and fr in grid, and the one sanctioned translateY(1px)
+   press. A hex in this file is a defect.
+
+   TIER 1 MOTION lives here, because a hover state is part of what a button is.
+     --m-confirm (130ms)  input feedback. must feel instant.
+     --m-orient  (180ms)  hover, focus, colour + border orientation.
+     --m-settle  (240ms)  press release, lift, shadow settle.
+   All of it is turned off at the bottom of the file under reduced motion, and
+   every state stays readable with zero movement.
+
+   STATUS IS NEVER COLOUR ALONE. Each state carries its own text label, and the
+   marker shapes differ as well, so the meaning survives greyscale.
+   ============================================================================ */
+
+
+/* ============================================================================
+   1 · BUTTONS — .sc-btn
+   ----------------------------------------------------------------------------
+   One base, three intents. Works as <button> and as <a class="sc-btn">.
+   Every variant presses: translateY(1px) + --shadow-press. The press is the
+   part people feel, so it is the part that must not be missing.
+   ============================================================================ */
+
+.sc-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--sp-2);
+  font-family:var(--body);
+  font-size:var(--t-body);
+  font-weight:500;
+  line-height:var(--lh-snug);
+  text-decoration:none;            /* so an <a> matches a <button> */
+  padding:var(--sp-3) var(--sp-5);
+  border:1px solid transparent;
+  border-radius:var(--r-md);
+  cursor:pointer;
+  transition:background-color var(--m-orient) var(--ease),
+             border-color     var(--m-orient) var(--ease),
+             color            var(--m-orient) var(--ease),
+             box-shadow       var(--m-settle) var(--ease),
+             transform        var(--m-confirm) var(--ease);
+}
+
+.sc-btn:focus-visible{
+  outline:var(--focus-ring) solid var(--focus-color);
+  outline-offset:var(--focus-offset);
+}
+
+/* --- primary: the one solid fill on the page ------------------------------
+   EVERY state below re-declares `color`, and that repetition is the point.
+   base.css `a:hover` is (0,1,1) and outranks `.sc-btn--primary` at (0,1,0), so
+   an <a class="sc-btn sc-btn--primary"> hovered or pressed would take the LINK
+   colour: --signal-deep on a --signal-deep fill is 1:1, and the label
+   disappears. A variant state rule is (0,2,0), which wins. Any new variant owes
+   its hover and active states the same declaration. */
+.sc-btn--primary{
+  background-color:var(--signal);
+  color:var(--on-signal);
+  border-color:var(--signal);
+  box-shadow:var(--shadow-1);
+}
+.sc-btn--primary:hover{
+  background-color:var(--signal-deep);
+  color:var(--on-signal);
+  border-color:var(--signal-deep);
+  box-shadow:var(--shadow-2);
+}
+.sc-btn--primary:active{
+  background-color:var(--signal-deep);
+  color:var(--on-signal);
+  border-color:var(--signal-deep);
+  transform:translateY(1px);
+  box-shadow:var(--shadow-press);
+}
+
+/* --- outline: a sheet with a functional border ---------------------------- */
+.sc-btn--outline{
+  background-color:var(--surface);
+  color:var(--ink);
+  border-color:var(--line);
+}
+.sc-btn--outline:hover{
+  background-color:var(--signal-tint);
+  border-color:var(--signal);
+  color:var(--signal);
+}
+.sc-btn--outline:active{
+  transform:translateY(1px);
+  box-shadow:var(--shadow-press);
+}
+
+/* --- ghost: no border until you touch it ---------------------------------- */
+.sc-btn--ghost{
+  background-color:transparent;
+  color:var(--muted);
+  border-color:transparent;
+}
+.sc-btn--ghost:hover{
+  background-color:var(--surface-hover);
+  border-color:var(--line-soft);
+  color:var(--ink);
+}
+.sc-btn--ghost:active{
+  transform:translateY(1px);
+  box-shadow:var(--shadow-press);
+}
+
+/* --- disabled: reads as UNAVAILABLE, not as faint text --------------------
+   The dashed border is the non-colour half of the signal — the control still
+   looks switched off in greyscale. [aria-disabled] is here for anchors, which
+   cannot carry the real attribute. */
+.sc-btn[disabled],
+.sc-btn[aria-disabled="true"]{
+  background-color:var(--disabled-bg);
+  color:var(--disabled-ink);
+  border-color:var(--line-soft);
+  border-style:dashed;
+  box-shadow:none;
+  transform:none;
+  cursor:not-allowed;
+}
+/* and it does not answer the mouse at all */
+.sc-btn[disabled]:hover,
+.sc-btn[disabled]:active,
+.sc-btn[aria-disabled="true"]:hover,
+.sc-btn[aria-disabled="true"]:active{
+  background-color:var(--disabled-bg);
+  color:var(--disabled-ink);
+  border-color:var(--line-soft);
+  box-shadow:none;
+  transform:none;
+}
+
+
+/* ============================================================================
+   2 · FIND PILL — .sc-pill
+   ----------------------------------------------------------------------------
+   The search control. A pill so it never reads as a primary action, with the
+   shortcut shown in a real <kbd> rather than described in words.
+   Markup:  <button class="sc-pill">Find <kbd>Ctrl K</kbd></button>
+   ============================================================================ */
+
+.sc-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:var(--sp-2);
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  text-decoration:none;
+  color:var(--ink);
+  background-color:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-pill);
+  /* tighter on the right: the kbd already carries its own padding */
+  padding:var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4);
+  cursor:pointer;
+  transition:background-color var(--m-orient) var(--ease),
+             border-color     var(--m-orient) var(--ease),
+             box-shadow       var(--m-settle) var(--ease),
+             transform        var(--m-confirm) var(--ease);
+}
+.sc-pill:hover{
+  background-color:var(--signal-tint);
+  border-color:var(--signal);
+}
+.sc-pill:focus-visible{
+  outline:var(--focus-ring) solid var(--focus-color);
+  outline-offset:var(--focus-offset);
+}
+.sc-pill:active{
+  transform:translateY(1px);
+  box-shadow:var(--shadow-press);
+}
+
+.sc-pill kbd{
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  letter-spacing:0;                /* a keycap is not a label — no tracking */
+  line-height:var(--lh-body);
+  color:var(--muted);
+  background-color:var(--paper-deep);
+  border:1px solid var(--line-soft);
+  border-radius:var(--r-sm);
+  padding:0 var(--sp-2);
+  white-space:nowrap;
+}
+
+
+/* ============================================================================
+   3 · CHIP — .sc-chip
+   ----------------------------------------------------------------------------
+   A toggle. aria-pressed="true" IS the state — do not add a class for it, and
+   do not ship one without the attribute, or the state exists only for people
+   who can see colour. The square marker fills when pressed, so the toggle is
+   readable with no colour at all.
+   ============================================================================ */
+
+.sc-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:var(--sp-2);
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  color:var(--ink);
+  background-color:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-sm);
+  padding:var(--sp-2) var(--sp-4);
+  cursor:pointer;
+  transition:background-color var(--m-orient) var(--ease),
+             border-color     var(--m-orient) var(--ease),
+             color            var(--m-orient) var(--ease),
+             transform        var(--m-confirm) var(--ease);
+}
+
+/* the marker. --sp-2 is a size here because tokens.css has no control-glyph
+   size; 8px is the closest honest value. */
+.sc-chip::before{
+  content:"";
+  flex:none;
+  width:var(--sp-2);
+  height:var(--sp-2);
+  background-color:transparent;
+  border:1px solid var(--line);
+  transition:background-color var(--m-confirm) var(--ease),
+             border-color     var(--m-confirm) var(--ease);
+}
+
+.sc-chip:hover{ border-color:var(--signal); color:var(--signal); }
+.sc-chip:hover::before{ border-color:var(--signal); }
+
+.sc-chip:focus-visible{
+  outline:var(--focus-ring) solid var(--focus-color);
+  outline-offset:var(--focus-offset);
+}
+.sc-chip:active{ transform:translateY(1px); }
+
+.sc-chip[aria-pressed="true"]{
+  color:var(--signal);
+  background-color:var(--signal-tint);
+  border-color:var(--signal);
+}
+.sc-chip[aria-pressed="true"]::before{
+  background-color:var(--signal);
+  border-color:var(--signal);
+}
+
+.sc-chip[disabled],
+.sc-chip[aria-disabled="true"]{
+  background-color:var(--disabled-bg);
+  color:var(--disabled-ink);
+  border-color:var(--line-soft);
+  border-style:dashed;
+  cursor:not-allowed;
+  transform:none;
+}
+
+
+/* ============================================================================
+   4 · TAG — .sc-tag
+   ----------------------------------------------------------------------------
+   Static metadata. It is NOT a filter and NOT a link, so it has no hover, no
+   cursor change, and no focus state. If it needs one, it is a chip.
+   ============================================================================ */
+
+.sc-tag{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  line-height:var(--lh-snug);
+  color:var(--muted);
+  background-color:var(--paper-deep);
+  border:1px solid var(--line);
+  border-radius:var(--r-sm);
+  padding:var(--sp-1) var(--sp-2);
+}
+
+
+/* ============================================================================
+   4b · CUE — .sc-cue
+   ----------------------------------------------------------------------------
+   The one next action on a page. It is a LINK, not a button, and that is the
+   whole point: a page gets one dominant idea and one next step, and a cue must
+   never look like it is competing with a row of buttons. If two of these appear
+   in one viewport, one of them is wrong.
+
+   Carried over from Stagecraft v1, reshaped for the paper ground and chosen
+   from four rendered candidates (D-007, Q-7 closed 2026-08-28). It reuses the
+   signal tick from `.sc-label--rule` rather than inventing a second device, so
+   the page keeps one vocabulary. The tick EXTENDS on hover and focus — the
+   movement is the rule growing, not the arrow travelling.
+
+   MARKUP CONTRACT:
+     <a class="sc-cue" href="…">Read the index
+       <span class="sc-cue-arw" aria-hidden="true">&rarr;</span></a>
+   The arrow is a real element rather than generated content so it can carry
+   aria-hidden. It is decoration; the link text alone must say where it goes.
+   `text-decoration:none` is required here because base.css underlines anchors,
+   and an underline would fight the tick.
+   ============================================================================ */
+
+.sc-cue{
+  /* The tick and the gap are one pair: whatever one gains the other gives up,
+     which is what holds the cue's outer width constant through every state.
+     --sc-cue-reach is the only number to touch when retuning how far the rule
+     extends; the gap follows it automatically. */
+  --sc-cue-base: var(--sp-6);       /* resting rule length            */
+  --sc-cue-reach: var(--sp-4);      /* how much further it extends    */
+  --sc-cue-tick: var(--sc-cue-base);
+  --sc-cue-gap: var(--sc-cue-reach);
+
+  display:inline-flex;
+  align-items:center;
+  /* gap:0 — the spacing is set per child below. A shared `gap` sits between the
+     tick AND the arrow, so trading it against the tick's length moved the arrow
+     by the same amount it saved. The trade has to be between the tick and its
+     own margin, and nothing else. */
+  gap:0;
+
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  text-decoration:none;
+  color:var(--ink);
+
+  transition:color var(--m-orient) var(--ease);
+}
+
+/* THE TICK, AT CONSTANT TOTAL WIDTH.
+   It used to animate inline-size from --sp-6 to --sp-8, which grew the cue's own
+   layout width by 25px on hover — so it pushed its own text and arrow sideways,
+   and ARCHITECTURE and D-007 have both claimed since the day it shipped that
+   "the arrow does not travel". It travelled 25px.
+
+   That was not only a false claim. A control that changes its own layout width
+   can wrap a sibling onto the next line, which takes the cursor off the control,
+   which drops the hover, which unwraps it back under the cursor — an
+   oscillation, reproduced on the prototype's sign-in card.
+
+   The fix is that the tick grows by exactly the amount the gap shrinks, so the
+   cue's outer width is identical in all three states. The rule visibly extends
+   by half its length, the text and the arrow do not move by a pixel, and the
+   cue stays flush with the copy above it — which reserving a longer box did not.
+
+   The two lengths are tokens on the element, so retuning how far the rule
+   reaches is one number and not a rewrite. D-007's Change Rule allows exactly
+   that: "retuning the tick length or the transition is not" a Change Request.
+   (D-011) */
+.sc-cue::before{
+  content:"";
+  inline-size:var(--sc-cue-tick);
+  block-size:1px;
+  background-color:var(--signal);
+  flex:none;
+  margin-inline-end:var(--sc-cue-gap);
+  transition:inline-size var(--m-orient) var(--ease),
+             margin-inline-end var(--m-orient) var(--ease);
+}
+
+/* the arrow's own spacing is FIXED and independent of the tick's, so nothing the
+   rule does can move it. That is the whole claim the component makes. */
+.sc-cue-arw{ color:var(--signal); flex:none; margin-inline-start:var(--sp-3); }
+
+.sc-cue:hover,
+.sc-cue:focus-visible{ color:var(--signal); }
+
+/* extended: the rule takes the gap's width, so the pair sums to the same total */
+.sc-cue:hover,
+.sc-cue:focus-visible{
+  --sc-cue-tick: calc(var(--sc-cue-base) + var(--sc-cue-reach));
+  --sc-cue-gap: 0px;
+}
+
+/* Pressed: the tick snaps back short, so the press is felt without moving the
+   text. --sp-5 rather than the resting --sp-6, and it reads at any speed. */
+/* pressed: the rule snaps back SHORTER than rest, and the gap takes the slack.
+   The press is felt without the text moving under the cursor. */
+.sc-cue:active{
+  --sc-cue-tick: calc(var(--sc-cue-base) - var(--sp-2));
+  --sc-cue-gap: calc(var(--sc-cue-reach) + var(--sp-2));
+}
+
+
+/* ============================================================================
+   5 · CARD — .sc-card
+   ----------------------------------------------------------------------------
+   A white sheet lying on the drafting paper. The elevation is real: two grounds
+   plus a shadow, not a hairline pretending to be depth.
+
+   The corner ticks are registration marks, drawn as two pseudo-elements with
+   partial borders. Pure CSS, nothing to fail to load. They are decorative —
+   pointer-events:none so they never eat a click.
+
+   Markup:
+     <article class="sc-card">
+       <span  class="sc-card-kicker">Rail</span>
+       <h3    class="sc-card-title">Clear Board</h3>
+       <p     class="sc-card-desc">Four rail trainers folded into one.</p>
+       <p     class="sc-card-stat"><strong>148</strong><small>Rules</small></p>
+     </article>
+   ============================================================================ */
+
+.sc-card{
+  position:relative;
+  background-color:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:var(--sp-5);
+  box-shadow:var(--shadow-1);
+  text-decoration:none;            /* for an <a class="sc-card"> — see below */
+  transition:transform    var(--m-settle) var(--ease),
+             box-shadow   var(--m-settle) var(--ease),
+             border-color var(--m-orient) var(--ease);
+}
+
+/* A card WRAPPED in a link is the other half of that reset, and it cannot be
+   done from inside the card: the anchor paints the underline across its whole
+   in-flow subtree, so the cancellation has to sit on the anchor. Its own rule,
+   never comma-joined with another — an unsupported :has() invalidates the
+   entire selector list it appears in (same reason as the closed-row rules). */
+a:has(.sc-card){ text-decoration:none; }
+
+.sc-card::before,
+.sc-card::after{
+  content:"";
+  position:absolute;
+  width:var(--tick-size);
+  height:var(--tick-size);
+  pointer-events:none;
+  transition:border-color var(--m-orient) var(--ease);
+}
+/* top-left mark: only the two edges that meet in that corner */
+.sc-card::before{
+  top:var(--sp-2);
+  left:var(--sp-2);
+  border-top:1px solid var(--tick-color);
+  border-left:1px solid var(--tick-color);
+}
+/* bottom-right mark */
+.sc-card::after{
+  bottom:var(--sp-2);
+  right:var(--sp-2);
+  border-bottom:1px solid var(--tick-color);
+  border-right:1px solid var(--tick-color);
+}
+
+/* hover: a small lift, and the marks go live */
+.sc-card:hover{
+  transform:translateY(calc(var(--sp-1) * -1));
+  box-shadow:var(--shadow-2);
+  border-color:var(--signal);
+}
+.sc-card:hover::before,
+.sc-card:hover::after{ border-color:var(--signal); }
+
+.sc-card:focus-within{
+  border-color:var(--signal);
+}
+
+/* --raised: already lifted at rest. There is no --shadow-3, so hover keeps
+   --shadow-2 and lets the translate + border carry the change. */
+.sc-card--raised{ box-shadow:var(--shadow-2); }
+
+/* --- card internals ------------------------------------------------------- */
+
+.sc-card-kicker{
+  display:block;
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.sc-card-title{
+  font-family:var(--display);
+  font-weight:600;
+  font-size:var(--t-index);
+  line-height:var(--lh-snug);
+  letter-spacing:var(--track-tight);
+  color:var(--ink);
+  margin-top:var(--sp-3);
+}
+
+.sc-card-desc{
+  font-size:var(--t-small);
+  line-height:var(--lh-body);
+  color:var(--muted);
+  margin-top:var(--sp-2);
+  overflow-wrap:break-word;
+}
+
+/* the number is the point of the card, so it gets the display face and
+   tabular figures — a stat that shifts width as it updates reads as noise. */
+.sc-card-stat{
+  display:flex;
+  align-items:baseline;
+  gap:var(--sp-2);
+  margin-top:var(--sp-5);
+  padding-top:var(--sp-4);
+  border-top:1px solid var(--line-soft);
+}
+.sc-card-stat > strong{
+  font-family:var(--display);
+  font-weight:600;
+  /* WANTED: a stat size between --t-section and --t-chapter. --t-chapter is
+     the closest existing token and runs large in a narrow card. */
+  font-size:var(--t-chapter);
+  line-height:var(--lh-tight);
+  letter-spacing:var(--track-tight);
+  font-variant-numeric:tabular-nums;
+  color:var(--ink);
+}
+.sc-card-stat > small{
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+
+/* ============================================================================
+   6 · DATA ROWS — .sc-rows / .sc-row
+   ----------------------------------------------------------------------------
+   Index · name · description · status. A typographic register, not a card grid.
+
+   Responsive here is RE-AUTHORING, not shrinking:
+     ≥900px  all four columns
+     <900px  the description is dropped — at that width it is the least useful
+             column, and wrapping it makes every row a different height
+     <520px  the index goes too, leaving name + status, which is the pair that
+             actually answers "what is this and is it live"
+   Nothing scrolls sideways at any width.
+
+   Closed rows: the state is set once on the .sc-state child and the row follows
+   via :has(). The .sc-row--closed modifier does the same job for engines
+   without :has — the two rules are NOT comma-joined on purpose, because an
+   unsupported :has() invalidates a whole selector list.
+   ============================================================================ */
+
+/* THE REGISTER IS A PLATE, not a stack of rules on the page ground.
+   It used to be a bare list with hairline dividers sitting directly on the
+   drafting grid, and a 1px divider among 1px ruling is not a divider — on the
+   dark ground it measured QUIETER than the ruling it sat among (1.52:1 against
+   1.59:1) and lost outright. A schedule block on a real drawing is a solid area
+   on the sheet, not a window onto the underlay. Giving it its own opaque ground
+   is the structural fix; the tone and width changes are the other two. (D-010)
+
+   No overflow:hidden. The radius is carried by the first and last rows instead,
+   because clipping the plate would clip a row's focus ring with it — the ring is
+   drawn with a NEGATIVE outline-offset so it lands inside the row, and an
+   overflow clip on the parent would still cut its corners. */
+.sc-rows{
+  list-style:none;
+  margin:0;
+  padding:0;
+  background-color:var(--surface);
+  border:var(--rule-w) solid var(--line);
+  border-radius:var(--r-md);
+}
+.sc-rows > :first-child{ border-start-start-radius:var(--r-md); border-start-end-radius:var(--r-md); }
+.sc-rows > :last-child{
+  border-end-start-radius:var(--r-md); border-end-end-radius:var(--r-md);
+  border-bottom:0;                /* the plate's own border closes the list */
+}
+
+.sc-row{
+  /* the per-row knobs the closed state flips */
+  --sc-row-hover:var(--surface-hover);
+  --sc-row-shift:var(--sp-5);
+  --sc-row-ink:var(--ink);
+  --sc-row-ink-quiet:var(--muted);
+
+  /* An <a class="sc-row"> is a component, not a prose link. base.css underlines
+     every anchor, and a text decoration is painted across the whole in-flow
+     subtree — it cannot be cancelled from inside — so the index, the name, the
+     description AND the status token would all be underlined, giving the row a
+     fourth visual channel that tracks anchor-ness while looking like state.
+     Cancelled here, on the element that draws it. Prose links keep their
+     underline; the row says "I answer the mouse" with the hover wash and the
+     padding shift instead. Same reset as .sc-btn, .sc-pill and .sc-nav a. */
+  text-decoration:none;
+
+  display:grid;
+  /* THE NAME COLUMN IS CAPPED IN ch, NOT IN PER CENT, and that is the whole
+     hover-reflow fix.
+
+     It was `minmax(min-content, 26%)` — twenty-six per cent OF THE ROW'S
+     CONTENT BOX. `.sc-row:hover` adds `padding-inline-start`, which narrows
+     that box, which narrows this column, which is how a hover state came to
+     resize a text column. Measured on proof/instrument.html, row V-03:
+     .sc-row-name went 171x30 to 169x60 — two pixels narrower, so "COT
+     positioning" wrapped to a second line, the row grew 30px and three
+     siblings jumped. That is the oscillation vhover.mjs exists to catch, and
+     it had been catching it.
+
+     A ch cap does not move when the row's padding does, so the shift comes out
+     of the `1fr` column, which has slack for it. 18ch measures within 7px of
+     what 26% gave at 1280 — this is not a resize, it is the same column
+     expressed against the thing it should have depended on all along: the
+     text it holds.
+
+     26% was also unstable WITHOUT hover. At a 1600px viewport the row wrapped
+     at rest, which no amount of hover discipline would have fixed. */
+  grid-template-columns:auto minmax(min-content, 18ch) minmax(0, 1fr) auto;
+  align-items:baseline;
+  gap:var(--sp-1) var(--sp-4);
+  padding:var(--sp-4);
+  border-bottom:var(--rule-w) solid var(--line-soft);
+  transition:background-color     var(--m-orient) var(--ease),
+             padding-inline-start var(--m-confirm) var(--ease);
+}
+
+/* the hover shift is a nudge to the right — it says "this row", without a
+   border or a colour block doing the shouting */
+.sc-row:hover{
+  background-color:var(--sc-row-hover);
+  padding-inline-start:var(--sc-row-shift);
+}
+
+/* rows are not focusable by default; this covers a page that makes them so */
+.sc-row:focus-visible{
+  outline:var(--focus-ring) solid var(--focus-color);
+  outline-offset:calc(var(--focus-offset) * -1);
+}
+
+.sc-row-n{
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  font-variant-numeric:tabular-nums;
+  color:var(--sc-row-ink-quiet);
+}
+
+.sc-row-name{
+  min-width:0;
+  font-family:var(--display);
+  font-weight:500;
+  font-size:var(--t-index);
+  line-height:var(--lh-snug);
+  letter-spacing:var(--track-tight);
+  color:var(--sc-row-ink);
+  overflow-wrap:break-word;
+}
+
+.sc-row-what{
+  min-width:0;
+  font-size:var(--t-small);
+  line-height:var(--lh-body);
+  color:var(--sc-row-ink-quiet);
+  overflow-wrap:break-word;
+}
+
+.sc-row-state{
+  justify-self:end;
+  text-align:end;
+  white-space:nowrap;
+}
+
+/* --- closed rows: dim, and they do not answer the mouse ------------------- */
+.sc-row--closed{
+  --sc-row-hover:transparent;
+  --sc-row-shift:var(--sp-4);      /* same as resting: no shift */
+  --sc-row-ink:var(--ink-dim);
+  --sc-row-ink-quiet:var(--ink-dim);
+  cursor:default;
+}
+.sc-row:has(.sc-state--closed){
+  --sc-row-hover:transparent;
+  --sc-row-shift:var(--sp-4);
+  --sc-row-ink:var(--ink-dim);
+  --sc-row-ink-quiet:var(--ink-dim);
+  cursor:default;
+}
+.sc-row--closed .sc-row-name{ font-weight:400; }
+.sc-row:has(.sc-state--closed) .sc-row-name{ font-weight:400; }
+
+/* --- re-authored, not shrunk --------------------------------------------- */
+@media (max-width:900px){
+  .sc-row{ grid-template-columns:auto minmax(0, 1fr) auto; }
+  .sc-row-what{ display:none; }
+}
+@media (max-width:520px){
+  .sc-row{
+    grid-template-columns:minmax(0, 1fr) auto;
+    padding:var(--sp-3) var(--sp-2);
+  }
+  .sc-row-n{ display:none; }
+}
+
+
+/* ============================================================================
+   7 · STATE — .sc-state
+   ----------------------------------------------------------------------------
+   The label text carries the meaning. Always. The colour is a second channel,
+   never the only one, and the marker shape is a third:
+     live    filled square
+     built   filled dot
+     frozen  hollow square
+     closed  a single rule, struck flat
+   Read this file in greyscale and all four are still distinct.
+   ============================================================================ */
+
+.sc-state{
+  display:inline-flex;
+  align-items:center;
+  gap:var(--sp-2);
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.sc-state::before{
+  content:"";
+  flex:none;
+  width:var(--sp-2);
+  height:var(--sp-2);
+  border:1px solid currentColor;   /* inherits the variant colour — no literal */
+  background-color:transparent;
+}
+
+.sc-state--live{ color:var(--signal); }
+.sc-state--live::before{ background-color:currentColor; }
+
+/* --status-built, not --secondary. tokens.css §4 reserves the red pencil for
+   correction and attention; this status was the only place in the whole
+   stylesheet that broke that rule (audit id 21 / Q-6, closed 2026-08-28 by
+   giving BUILT its own ink rather than widening the secondary's job). */
+.sc-state--built{ color:var(--status-built); }
+.sc-state--built::before{ background-color:currentColor; border-radius:50%; }
+
+.sc-state--frozen{ color:var(--muted); }
+/* frozen keeps the hollow square from the base rule */
+
+.sc-state--closed{ color:var(--ink-dim); }
+.sc-state--closed::before{
+  height:0;
+  border:0;
+  border-bottom:1px solid currentColor;
+}
+
+
+/* ============================================================================
+   8 · FIELD + INPUT — .sc-field / .sc-input-label / .sc-input
+   ----------------------------------------------------------------------------
+   The label is visible and it is a real <label for>. A placeholder is not a
+   label — it disappears the moment someone types.
+   ============================================================================ */
+
+.sc-field{
+  /* WANTED: a form-width token. --measure-tight is the closest sane bound. */
+  max-width:var(--measure-tight);
+}
+
+.sc-input-label{
+  display:block;
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:var(--sp-2);
+}
+
+.sc-input{
+  width:100%;
+  font-family:var(--body);
+  font-size:var(--t-body);
+  line-height:var(--lh-snug);
+  color:var(--ink);
+  background-color:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  padding:var(--sp-3) var(--sp-4);
+  transition:border-color var(--m-orient) var(--ease),
+             box-shadow   var(--m-orient) var(--ease);
+}
+.sc-input::placeholder{ color:var(--disabled-ink); }
+.sc-input:hover{ border-color:var(--line-strong); }
+
+/* focus: the border goes to signal AND the ring lands. The inset hairline
+   doubles the border rather than painting a translucent glow — tokens.css has
+   no translucent signal, and inventing one would be a defect. */
+.sc-input:focus{
+  border-color:var(--signal);
+  box-shadow:inset 0 0 0 1px var(--signal);
+}
+.sc-input:focus-visible{
+  outline:var(--focus-ring) solid var(--focus-color);
+  outline-offset:var(--focus-offset);
+}
+
+.sc-input[disabled],
+.sc-input[readonly]{
+  background-color:var(--disabled-bg);
+  color:var(--disabled-ink);
+  border-color:var(--line-soft);
+  border-style:dashed;
+  cursor:not-allowed;
+}
+
+
+/* ============================================================================
+   9 · SEGMENTED CONTROL — .sc-segment
+   ----------------------------------------------------------------------------
+   A recessed track with one raised option — the sheet metaphor again: the
+   selection sits ON the track.
+
+   It is ONE choice out of a small set, so it is a RADIO GROUP. A <fieldset>
+   carries the grouping, a <legend> names the group, and each option is a hidden
+   radio input plus the visible <label> that operates it. The grouping, the
+   arrow-key navigation, the checked state and the announcement all come from
+   the platform. No script, no ARIA, and therefore no half-built widget.
+
+   Markup:
+     <fieldset class="sc-segment">
+       <legend class="sc-input-label">Range</legend>
+       <input  class="sc-segment-input"  type="radio" name="range" id="range-day" checked>
+       <label  class="sc-segment-option" for="range-day">Day</label>
+       <input  class="sc-segment-input"  type="radio" name="range" id="range-week">
+       <label  class="sc-segment-option" for="range-week">Week</label>
+     </fieldset>
+   Every input in one track shares one `name` — that shared name IS the group,
+   and it is what makes the arrow keys move between the options. Every input
+   needs an `id` and every label a matching `for`. Mark an unavailable option
+   with the real `disabled` attribute on its INPUT, not on the label.
+
+   The track padding is --sp-2 (8px), larger than the focus ring's reach
+   (--focus-offset + --focus-ring = 5px), so the ring drawn on a label always
+   sits inside the track. The fieldset form below also sets overflow-x:visible,
+   so nothing can clip that ring even if the padding is later retuned.
+   ============================================================================ */
+
+.sc-segment{
+  display:inline-flex;             /* the deprecated button track. The fieldset
+                                      form below switches to inline layout. */
+  gap:var(--sp-2);
+  max-width:100%;
+  overflow-x:auto;                 /* wide segments scroll inside themselves */
+  background-color:var(--paper-deep);
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  padding:var(--sp-2);
+}
+
+/* --- the track, as a fieldset ---------------------------------------------
+   The element name is the switch, so both markups can share one class while
+   pages migrate.
+
+   FLEX, with the legend on its own line. The first build laid the options out
+   inline and floated the legend to width:100% to lift it out of the border
+   slot. That combination is what broke the control: a 100%-wide float leaves
+   no room beside it, and white-space:nowrap meant the option run could not
+   drop to the next line, so it was pushed sideways into the track's horizontal
+   overflow. The control rendered as an EMPTY BOX carrying only its legend, at
+   every viewport width — including 1280px, with 600px of unused space beside
+   it. Caught by rendering it on 2026-08-30; not visible to any structural
+   check, because every rule involved was individually valid.
+
+   The fix is flex-wrap: the legend takes the first line, the options the next.
+   The legend goes back to its ordinary rendered position in the notch of the
+   top border, which is safe now because the track no longer scrolls and
+   therefore no longer clips. */
+fieldset.sc-segment{
+  display:flex;                    /* see the note above — inline-block plus a
+                                      floated legend is what rendered this
+                                      control as an empty box */
+  flex-wrap:wrap;                  /* legend on line one, options on line two.
+                                      A track wider than its column wraps
+                                      instead of scrolling out of sight. */
+  align-items:center;
+  margin:0;                        /* the UA gives a fieldset 2px inline margin */
+  min-inline-size:0;               /* the UA also gives it min-content, which
+                                      would push the PAGE sideways at 375px */
+  overflow-x:visible;              /* the options wrap, so the track never needs
+                                      to scroll — and a visible overflow cannot
+                                      clip the legend or a focus ring */
+  white-space:normal;              /* nowrap was what stopped the options from
+                                      dropping to their own line. Each option
+                                      keeps its own nowrap, so a two-word label
+                                      still does not break inside its pill. */
+  font-size:inherit;               /* font-size:0 existed only to kill the
+                                      whitespace between two INLINE options.
+                                      Flex ignores that whitespace, so the hack
+                                      is gone and loose text in the track shows */
+}
+
+.sc-segment > legend{
+  float:none;                      /* THE FIX. A float cannot be a flex item,
+                                      and a 100%-wide float is what left the
+                                      options with no room. The legend sits in
+                                      its ordinary rendered position, in the
+                                      notch of the top border. */
+  width:auto;
+  padding:0;                       /* the UA gives a legend 2px inline padding */
+  white-space:normal;              /* a long group name wraps rather than
+                                      pushing the track sideways */
+  /* Named explicitly rather than inherited — the local guarantee that the group
+     name still shows if the label arrives as a plain <legend>. Same value
+     .sc-input-label sets. */
+  font-size:var(--t-label);
+}
+
+/* The input carries the state and the tab stop. It is clipped to 1px rather
+   than hidden with display:none or visibility:hidden, because either of those
+   takes it out of the tab order — and the tab stop, the arrow keys and the
+   checked state are the entire reason this is a radio and not a button. */
+.sc-segment-input{
+  position:absolute;               /* no offsets, so it stays at its static
+                                      position beside the label it belongs to */
+  width:1px;
+  height:1px;
+  margin:0;
+  padding:0;
+  border:0;
+  overflow:hidden;
+  clip:rect(0 0 0 0);              /* the old property: still the wider net */
+  clip-path:inset(50%);
+}
+
+.sc-segment-option{
+  display:inline-flex;
+  align-items:center;
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  color:var(--muted);
+  background-color:transparent;
+  border:1px solid transparent;
+  border-radius:var(--r-sm);
+  padding:var(--sp-2) var(--sp-4);
+  margin-inline-start:var(--sp-2); /* what gap: does for the flex track */
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background-color var(--m-orient) var(--ease),
+             color            var(--m-orient) var(--ease),
+             border-color     var(--m-orient) var(--ease),
+             box-shadow       var(--m-settle) var(--ease);
+}
+.sc-segment-option:first-of-type{ margin-inline-start:0; }
+
+.sc-segment-option:hover{
+  color:var(--ink);
+  background-color:var(--surface-hover);
+}
+.sc-segment-option:active{ box-shadow:var(--shadow-press); }
+
+/* the selection is raised, not just tinted */
+.sc-segment-input:checked + .sc-segment-option{
+  color:var(--ink);
+  background-color:var(--surface);
+  border-color:var(--line);
+  box-shadow:var(--shadow-1);
+}
+
+/* The ring lands on the label, because the input it belongs to is one pixel
+   wide. Nothing else focuses in this control, so nothing else needs one. */
+.sc-segment-input:focus-visible + .sc-segment-option{
+  outline:var(--focus-ring) solid var(--focus-color);
+  outline-offset:var(--focus-offset);
+}
+
+/* Unavailable, and never by colour alone. The dashed border is the non-colour
+   half of the signal — an enabled option's border is transparent, so the dashes
+   appear where there was no line at all, and that reads in greyscale.
+
+   The border is --line, not the --line-soft the other disabled controls use:
+   this one sits on the --paper-deep track, where --line-soft measures 1.28:1
+   and cannot be seen. tokens.css §5 reserves --line-soft for decoration and
+   --line for a border that has to be perceivable to be usable, which is exactly
+   the job here (2.90:1 on the track).
+
+   This rule follows :checked on purpose — the two are the same specificity, and
+   disabled has to win the colours. */
+.sc-segment-input:disabled + .sc-segment-option{
+  color:var(--disabled-ink);
+  background-color:var(--disabled-bg);
+  border-color:var(--line);
+  border-style:dashed;
+  box-shadow:none;
+  cursor:not-allowed;
+}
+/* an unavailable option that is still the chosen one keeps the raise, so it
+   reads as "selected, and switched off" rather than as simply absent */
+.sc-segment-input:checked:disabled + .sc-segment-option{
+  box-shadow:var(--shadow-1);
+}
+
+
+/* --- DEPRECATED: the role="tablist" / <button aria-selected> track ---------
+   Kept so pages part-way through the migration do not break. It declared a tab
+   widget with no tabpanel, no aria-controls and no arrow-key model, which is
+   why the radio form above replaced it. Delete this block once no page ships
+   a <div class="sc-segment" role="tablist">. */
+
+.sc-segment button{
+  flex:none;
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  color:var(--muted);
+  background-color:transparent;
+  border:1px solid transparent;
+  border-radius:var(--r-sm);
+  padding:var(--sp-2) var(--sp-4);
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background-color var(--m-orient) var(--ease),
+             color            var(--m-orient) var(--ease),
+             border-color     var(--m-orient) var(--ease),
+             box-shadow       var(--m-settle) var(--ease);
+}
+.sc-segment button:hover{
+  color:var(--ink);
+  background-color:var(--surface-hover);
+}
+.sc-segment button:focus-visible{
+  outline:var(--focus-ring) solid var(--focus-color);
+  outline-offset:var(--focus-offset);
+}
+.sc-segment button:active{ box-shadow:var(--shadow-press); }
+
+.sc-segment button[aria-selected="true"]{
+  color:var(--ink);
+  background-color:var(--surface);
+  border-color:var(--line);
+  box-shadow:var(--shadow-1);      /* the selection is raised, not just tinted */
+}
+
+/* Disabled needs a channel that survives greyscale, so it carries the same
+   dashed border and fill as the radio-pattern option above. --line, not
+   --line-soft: on the --paper-deep track --line-soft measures 1.28:1 and
+   cannot be seen, while --line is 2.90:1. The button already declares a
+   1px transparent border, so this costs no layout shift.
+   (Audit id 12, 2026-08-28 — the deprecated path had the same colour-alone
+   defect as the one that was rebuilt.) */
+.sc-segment button[disabled],
+.sc-segment button[aria-disabled="true"]{
+  color:var(--disabled-ink);
+  background-color:var(--disabled-bg);
+  border-color:var(--line);
+  border-style:dashed;
+  cursor:not-allowed;
+}
+
+
+/* ============================================================================
+   10 · ATTENTION BAND — .sc-attention
+   ----------------------------------------------------------------------------
+   Red pencil. Correction and attention ONLY — using --secondary decoratively is
+   a design bug (tokens.css §4). The mono label spells out what the band is, so
+   the red is reinforcement, not the message.
+
+   Markup:  <div class="sc-attention" role="note">
+              <span class="sc-label">Attention</span>
+              <p>…</p>
+            </div>
+   ============================================================================ */
+
+.sc-attention{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:var(--sp-2) var(--sp-4);
+  background-color:var(--secondary-tint);
+  border:1px solid var(--secondary);
+  /* the heavy left rule is the margin-note gesture. No border-width token
+     exists, so --sp-1 stands in for it. */
+  border-inline-start:var(--sp-1) solid var(--secondary);
+  border-radius:var(--r-md);
+  padding:var(--sp-4) var(--sp-5);
+  font-size:var(--t-body);
+  color:var(--ink);
+}
+
+/* base.css owns .sc-label globally; this is scoped recolouring plus a local
+   guarantee of the mono treatment, so the band reads correctly even if the
+   label element arrives as a plain span. */
+.sc-attention .sc-label{
+  font-family:var(--mono);
+  font-size:var(--t-label);
+  font-weight:500;
+  letter-spacing:var(--track-label);
+  text-transform:uppercase;
+  color:var(--secondary);
+  white-space:nowrap;
+}
+
+
+/* ============================================================================
+   11 · METER — .sc-meter / .sc-meter-fill
+   ----------------------------------------------------------------------------
+   .sc-meter IS the track. The label and the number sit above it in page markup,
+   because the number is never optional: a bar alone is a picture of a value,
+   not the value.
+
+   THE FILL WIDTH IS SET INLINE BY THE PAGE AUTHOR — it is data, not style, so
+   it does not belong in this file:
+     <div class="sc-meter" role="progressbar" aria-labelledby="…"
+          aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"
+          aria-valuetext="62 percent">
+       <div class="sc-meter-fill" style="width:62%"></div>
+     </div>
+   The default below is 0%, so a meter that never gets its width reads as empty
+   rather than as complete. A wrong number is worse than no number.
+   ============================================================================ */
+
+.sc-meter{
+  /* WANTED: a control-height token. --sp-3 is the closest existing value. */
+  height:var(--sp-3);
+  width:100%;
+  background-color:var(--paper-deep);
+  border:1px solid var(--line);
+  border-radius:var(--r-pill);
+  overflow:hidden;
+}
+
+.sc-meter-fill{
+  display:block;
+  height:100%;
+  width:0;
+  background-color:var(--signal);
+  border-radius:var(--r-pill);
+  /* hairline hatching, so the fill reads as filled without relying on hue.
+     Solid --on-signal rules rather than a translucent white, because a raw
+     rgba() here would be a defect. */
+  background-image:repeating-linear-gradient(
+    135deg,
+    var(--on-signal) 0 1px,
+    transparent 1px var(--sp-2));
+  transition:width var(--m-settle) var(--ease);
+}
+
+
+/* ============================================================================
+   12 · REDUCED MOTION
+   ----------------------------------------------------------------------------
+   Transitions off. Every state still lands — the colour, border, shadow and
+   padding changes all remain, they simply arrive instantly. Nothing here is
+   communicated by movement, so nothing is lost.
+
+   Scoped to sc- selectors on purpose: the global reduced-motion baseline is
+   base.css's job, not this file's.
+   ============================================================================ */
+
+@media (prefers-reduced-motion:reduce){
+  .sc-btn, .sc-pill, .sc-pill kbd,
+  .sc-chip, .sc-chip::before,
+  .sc-cue, .sc-cue::before,
+  .sc-card, .sc-card::before, .sc-card::after,
+  .sc-row, .sc-input,
+  .sc-segment-option,
+  .sc-segment button,
+  .sc-meter-fill{
+    transition:none;
+  }
+
+  /* the lift becomes shadow + border only — still clearly the hovered card */
+  .sc-card:hover{ transform:none; }
+
+  /* the press becomes shadow only — still clearly a pressed button */
+  .sc-btn:active,
+  .sc-btn--primary:active,
+  .sc-btn--outline:active,
+  .sc-btn--ghost:active,
+  .sc-pill:active,
+  .sc-chip:active{ transform:none; }
+
+  /* the row shift still LANDS, it just does not travel */
+  .sc-row:hover{ padding-inline-start:var(--sc-row-shift); }
+}

@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@import './stagecraft/fonts.css';
+@import './stagecraft/tokens.css';
+@import './stagecraft/base.css';
+@import './stagecraft/components.css';
+@import './stagecraft/compose.css';
+@import './stagecraft/motion.css';
+@import './trainer.css';

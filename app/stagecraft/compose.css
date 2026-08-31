@@ -1,0 +1,437 @@
+/* ============================================================================
+   compose.css — composition. Where things sit, and how far apart.
+   ----------------------------------------------------------------------------
+   The fifth layer, and the last one to be written, because it is the only one
+   that could not be designed before the parts existed.
+
+   WHAT THIS FILE IS FOR. tokens/base/components/motion answer "what does a
+   thing look like". None of them answer "where does it go on a page". Datum had
+   to grow its own shell in `proof/app.css` for exactly that reason, and every
+   page built on Stagecraft would have had to do the same. This file is the
+   vocabulary they were all going to reinvent.
+
+   IT RENDERS THE BIBLE. Every zone class below maps to one composition zone in
+   the Award-Winning Web UI/UX Style Bible's `composition_zones/zones.json`. The
+   names, the roles and the constraints live in that file; this stylesheet is
+   deliberately the dumber half of the pair, the same way `cel.zones.css` is the
+   dumber half of the game bible's zone list. If a zone's meaning changes, it
+   changes there.
+
+   THE LINE THIS FILE HOLDS — and it is the one thing the port changed.
+   Stagecraft v1 put composition and skin in one file: `.stage h1` set a
+   font-size, `.turn` re-declared the mono face, its size, its tracking and its
+   uppercasing, and `.field-well` set a background. Three sources say not to.
+   CUBE CSS states it outright — the composition layer "should not provide
+   visual treatment such as colour or font style". Every Layout argues a
+   primitive is "something without its own meaning or purpose as such"; a rule
+   that also sets a typeface has smuggled meaning in. Atlassian's primitives are
+   layout and spacing, "powered by design tokens", and nothing else.
+
+   So, precisely:
+
+     THIS FILE SETS      display · grid and flex · gap · padding · margin ·
+                         max-inline-size · position and sticky · aspect-ratio ·
+                         and hairline rules, through tokens.
+
+     THIS FILE NEVER SETS  font-family · font-size · letter-spacing ·
+                           text-transform · the colour of text.
+
+   Those already have owners. `base.css` binds the display scale to h1/h2 — so
+   `.sc-stage h1` does not need to, and v1's version was duplicating it. A zone
+   that needs a mono label uses `.sc-label`, the component that already is one.
+
+   Requires tokens.css, base.css and components.css. Rule 1 still holds: no raw
+   colour, duration, radius or shadow below this line.
+   ============================================================================ */
+
+
+/* ============================================================================
+   1 · PRIMITIVES — structure with no meaning of its own
+   ----------------------------------------------------------------------------
+   Five of them, and each does one thing. They carry no zone semantics on
+   purpose: the zones in section 2 are built FROM these, so seven zones are not
+   seven bespoke layouts. Every knob is a custom property with a token default,
+   so a zone tunes a primitive instead of overriding it.
+   ============================================================================ */
+
+/* --- flow · space children vertically ------------------------------------- */
+/* The owl. Space goes BETWEEN children, never on the outside, so a flow can be
+   dropped inside anything without adding a leading gap that then has to be
+   cancelled. `margin-block-start` rather than `margin-top` so it follows
+   writing mode with the rest of the file. */
+.sc-flow > * + *{ margin-block-start: var(--sc-flow-space, var(--sp-5)); }
+
+/* --- cluster · wrap inline things with even space ------------------------- */
+/* Chapter heads, note strips, tag runs, filter rows. Wrapping is the default
+   and not a failure state: the bible's responsive rule is that small screens
+   re-author priority, and a cluster that wraps has already done it. */
+.sc-cluster{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sc-cluster-gap, var(--sp-3) var(--sp-5));
+}
+.sc-cluster--between{ justify-content: space-between; }
+.sc-cluster--baseline{ align-items: baseline; }
+
+/* --- railed · a fixed rail beside a fluid body ---------------------------- */
+.sc-railed{
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: var(--sc-railed-gap, var(--sp-6));
+  align-items: start;
+}
+/* A grid item defaults to min-width:auto, so ONE wide scrolling figure in the
+   body column sizes the whole track to its min-content and pushes the page
+   sideways — non-negotiable 5, broken by a table nobody was looking at. The
+   overflow belongs inside the well, not in the track. Carried over from v1,
+   where it was found the same way. */
+.sc-railed > *{ min-width: 0; }
+
+/* --- bleed · escape the wrap --------------------------------------------- */
+/* Two reaches, and the difference matters. `.sc-bleed` goes out to the wrap's
+   padding edge: exact, no viewport arithmetic, safe at every width.
+   `.sc-bleed--full` goes to the viewport edge, and it relies on base.css's
+   `overflow-x: hidden` to absorb the scrollbar's width — which means the last
+   few pixels on each side can be clipped. So `--full` is for media that is
+   `object-fit: cover` anyway, and NEVER for text. */
+.sc-bleed{ margin-inline: calc(var(--gutter) * -1); }
+.sc-bleed--full{ margin-inline: calc(50% - 50vw); }
+
+/* --- frame · hold a ratio ------------------------------------------------- */
+.sc-frame{
+  aspect-ratio: var(--sc-frame-ratio, 16 / 9);
+  overflow: hidden;
+  display: block;
+}
+.sc-frame > img,
+.sc-frame > video,
+.sc-frame > canvas,
+.sc-frame > svg{
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* ============================================================================
+   2 · ZONES — composition_zones/zones.json, as layout
+   ============================================================================ */
+
+/* --- viewport_stage / hero_field ------------------------------------------
+   "Dominant object, idea, interaction, or opening promise. One primary focal
+   point. Do not consume multiple empty viewports. Place an honest next cue."
+
+   Of the four constraints, exactly one is a stylesheet's to hold: the cue is
+   `.sc-cue`, which the system already limits to one per page. The other three
+   are contracts, and they are asserted in tests/vcompose.mjs — see the note
+   directly below for why the obvious CSS version of "one viewport" is worse
+   than no CSS at all. ------------------------------------------------------- */
+/* THERE IS NO max-block-size HERE, AND THAT IS THE FIX.
+   The first draft capped the stage at --stage-cap and centred its content. At
+   1920x420 the content is 452px tall against a 370px cap, and a centred grid
+   that overflows escapes in BOTH directions: the eyebrow and the h1 were drawn
+   ABOVE the stage box, sliding under the sticky bar. Found by measuring the
+   boxes at four short viewports, not by looking — at 1440x1000 it is invisible.
+
+   A max-height cannot tell an empty hero from a tall one, and the bible's
+   constraint is about EMPTY viewports. So the mechanism is the padding, which is
+   already bounded by its clamps, and the constraint is an assertion in
+   tests/vcompose.mjs. --stage-cap is the number that test uses. */
+.sc-stage{
+  position: relative;
+  z-index: var(--z-base);
+  padding-block: var(--sp-9) var(--sp-8);
+  display: grid;
+  align-content: start;
+  gap: var(--sp-5);
+}
+/* The second line steps in and takes the signal, so the lockup has a direction
+   rather than only a size. This is composition doing typographic work — it sets
+   an indent and a colour, not a face and not a size. */
+.sc-stage-step{
+  display: block;
+  padding-inline-start: var(--sc-stage-step, clamp(0px, 6vw, 1.1em));
+  color: var(--signal);
+}
+.sc-stage > .sc-cue{ justify-self: start; }
+
+/* --- content_band ---------------------------------------------------------
+   "Readable narrative or explanation. Control text measure. Establish clear
+   entry and exit. Vary rhythm only for meaning."
+
+   Entry is `.sc-chapter-head`, exit is `.sc-turn`, and the measure is already
+   held by `.sc-copy` in base.css. `--quiet` is the rhythm variation, and it is
+   a variant rather than a free clamp so "only for meaning" stays checkable. -- */
+.sc-chapter{
+  position: relative;
+  z-index: var(--z-base);
+  padding-block: var(--sp-9);
+}
+.sc-chapter--quiet{ padding-block: var(--sp-8); }
+
+.sc-chapter-head{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3) var(--sp-5);
+  padding-block-end: var(--sp-4);
+  margin-block-end: var(--sp-7);
+  border-block-end: var(--rule-w) solid var(--line);
+}
+/* The title takes the slack and wraps inside itself; the folio never wraps onto
+   a line of its own. Without these two rules a long h2 pushed the folio to the
+   next flex line, where `space-between` left it stranded at the LEFT margin
+   under the title — found by rendering the zones chapter, whose head is the only
+   one long enough to wrap. */
+.sc-chapter-head > :first-child{ flex: 1 1 auto; min-inline-size: 0; }
+.sc-chapter-head > :last-child{ flex: none; margin-inline-start: auto; }
+
+/* the exit: every chapter ends by naming the next one. Distinct from `.sc-cue`,
+   which is the page's single primary action — a page has one cue and as many
+   turns as it has chapters. The label face comes from `.sc-label`, which the
+   markup carries; this rule adds the lead rule and the reach. */
+.sc-turn{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-6);
+  text-decoration: none;
+  transition: color var(--m-orient) var(--ease);
+}
+.sc-turn::before{
+  content: "";
+  flex: none;
+  inline-size: var(--sc-turn-reach, var(--sp-6));
+  block-size: var(--rule-w);
+  background-color: var(--line);
+  transition: background-color var(--m-orient) var(--ease),
+              inline-size var(--m-orient) var(--ease);
+}
+.sc-turn:hover,
+.sc-turn:focus-visible{ color: var(--signal); }
+.sc-turn:hover::before,
+.sc-turn:focus-visible::before{
+  background-color: var(--signal);
+  inline-size: calc(var(--sc-turn-reach, var(--sp-6)) + var(--sp-3));
+}
+
+/* --- media_field ----------------------------------------------------------
+   "Full-bleed or oversized evidence and atmosphere. Caption evidence. Protect
+   text contrast. Serve responsive assets."
+
+   NOT called `.sc-field` — that name is already a text input in components.css,
+   and a collision between a form control and a media band is the kind of thing
+   that only surfaces when both are on one page. The caption is not optional:
+   "caption evidence" is a constraint, and a `.sc-media` without a `.sc-media-cap`
+   is a test failure, not a style choice. -------------------------------------- */
+.sc-media{
+  position: relative;
+  z-index: var(--z-base);
+  margin-block-start: var(--sp-6);
+}
+.sc-media-well{
+  background-color: var(--surface);
+  border: var(--rule-w) solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  overflow-x: auto;                  /* wide evidence scrolls HERE, not the page */
+}
+.sc-media-well > .sc-frame{ border-radius: var(--r-md); }
+.sc-media-cap{
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-3);
+}
+.sc-media-cap::before{
+  content: "";
+  flex: none;
+  inline-size: var(--sp-5);
+  block-size: var(--rule-w);
+  background-color: var(--signal);
+}
+
+/* --- narrative_rail -------------------------------------------------------
+   "Chapter labels, progress, chronology. Do not compete with main content.
+   Remain understandable when collapsed."
+
+   Collapsed here means gone: below the breakpoint the rail is removed and the
+   chapter heads carry orientation instead. That is the bible's "responsive is
+   recomposition" — the rail does not shrink into an unusable column. --------- */
+/* --sp-8 is not a guess: base.css already sets `scroll-padding-top: var(--sp-8)`,
+   so 72px is this system's established "clears the sticky bar" offset and the
+   rail now sticks exactly where an anchor lands. If the bar's height changes,
+   both move together — and vcompose asserts the rail never sits under it. */
+.sc-rail{
+  position: sticky;
+  inset-block-start: var(--sc-rail-top, var(--sp-8));
+  align-self: start;
+}
+.sc-rail ol,
+.sc-rail ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-1);
+}
+.sc-rail a{
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0 var(--sp-2) var(--sp-3);
+  border-inline-start: var(--rule-w) solid var(--line-soft);
+  text-decoration: none;
+  /* NO resting colour here. base.css already gives every `a` --muted, and
+     re-declaring it was this file breaking its own contract — caught by
+     vcompose, not by reading. Only the two STATE rules below set colour. */
+  transition: color var(--m-orient) var(--ease),
+              border-color var(--m-orient) var(--ease);
+}
+.sc-rail a:hover,
+.sc-rail a:focus-visible{ color: var(--ink); border-color: var(--line); }
+.sc-rail a[aria-current]{ color: var(--signal); border-color: var(--signal); }
+
+/* --- edge_annotation ------------------------------------------------------
+   "Metadata, folios, labels, contextual controls. Never hold essential content
+   alone. Increase inset on touch devices."
+
+   A note is a cluster with a rule over it. It gets no colour of its own: the
+   markup carries `.sc-label`, so a note is legible for the same reason every
+   other label is. ------------------------------------------------------------ */
+/* base.css caps every `p` at `--measure`, which is right for running text and
+   wrong for a full-width strip: authored as a `<p>`, a note wrapped its labels
+   at 66ch while the rule above it ran the full column. A zone that is structure
+   releases the measure explicitly — compose.css owns `max-inline-size`. */
+.sc-note{
+  max-inline-size: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-6);
+  margin-block-start: var(--sp-7);
+  padding-block-start: var(--sp-4);
+  border-block-start: var(--rule-w) solid var(--line-soft);
+}
+
+/* --- content_band, typographic ---------------------------------------------
+   The catalogue. `.sc-rows` in components.css is already the list; what it has
+   never had is grouping, and a catalogue with no group headers is a wall. The
+   group rule runs out to the full width so the eye can find the break. -------- */
+.sc-index{ display: grid; }
+.sc-index-group{
+  max-inline-size: none;      /* see the note on .sc-note above */
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-7) var(--sp-2);
+}
+.sc-index-group::after{
+  content: "";
+  flex: 1;
+  block-size: var(--rule-w);
+  background-color: var(--line-soft);
+}
+
+/* --- content_band furniture: the two list treatments ------------------------
+   base.css styles no list at all, so a `<ul>` inside a chapter arrives with
+   browser defaults — a bullet, a 40px inline start, and margins that fight
+   `.sc-flow`. These are the two treatments v1 carried, ported: a numbered
+   sequence where the order is information, and a marked list where it is not.
+   Both hold the measure, because a list is running text. --------------------- */
+.sc-steps,
+.sc-marks{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-inline-size: var(--measure);
+}
+.sc-steps{ counter-reset: sc-step; }
+.sc-steps > li{
+  counter-increment: sc-step;
+  display: flex;
+  gap: var(--sp-5);
+  padding-block: var(--sp-3);
+  border-block-end: var(--rule-w) solid var(--line-soft);
+}
+.sc-steps > li::before{
+  content: counter(sc-step, decimal-leading-zero);
+  flex: none;
+  color: var(--signal);
+  font-variant-numeric: tabular-nums;
+}
+.sc-marks > li{
+  position: relative;
+  padding: var(--sp-3) 0 var(--sp-3) var(--sp-5);
+  border-block-end: var(--rule-w) solid var(--line-soft);
+}
+.sc-marks > li::before{
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 1.05em;
+  inline-size: var(--sp-3);
+  block-size: var(--rule-w);
+  background-color: var(--signal);
+}
+.sc-steps > li:last-child,
+.sc-marks > li:last-child{ border-block-end: 0; }
+
+/* --- conditional peers ----------------------------------------------------
+   "Use repeated cards only when items are genuinely comparable peers" is a core
+   principle, and this is the layout for the case where they are. Hairline gaps
+   rather than gutters, so the set reads as one table of equals instead of a row
+   of floating objects — which is the whole reason the principle exists. ------- */
+.sc-peers{
+  display: grid;
+  /* auto-FIT, not auto-fill. The hairline gap is the grid's own background
+     showing between the plates, so an unfilled track is not empty space — it is
+     a grey rectangle that reads as a fourth, blank peer. Three items in a
+     four-track auto-fill grid rendered exactly that, on the card page. auto-fit
+     collapses the empty track and the real peers stretch to take it. */
+  grid-template-columns: repeat(auto-fit, minmax(var(--sc-peer-min, var(--peer-min)), 1fr));
+  gap: var(--rule-w);
+  background-color: var(--line-soft);
+  border: var(--rule-w) solid var(--line-soft);
+}
+.sc-peers > *{ background-color: var(--surface); padding: var(--sp-4) var(--sp-5); }
+
+
+/* ============================================================================
+   3 · RESPONSIVE RECOMPOSITION
+   ----------------------------------------------------------------------------
+   "Small screens reorder priority and simplify interaction; they do not merely
+   shrink desktop." Each rule below removes or re-authors something. None of
+   them scale a desktop layout down.
+   ============================================================================ */
+
+@media (max-width: 900px){
+  /* The rail stops being a column and stops existing. Chapter heads carry
+     orientation instead — which is why `.sc-chapter-head` is not optional. */
+  .sc-railed{ grid-template-columns: minmax(0, 1fr); }
+  .sc-rail{ display: none; }
+}
+
+@media (max-width: 620px){
+  /* The stage's cap is a desktop concern; on a phone the content is taller than
+     the viewport and capping it would clip the lede. */
+  .sc-stage{ max-block-size: none; }
+  .sc-stage-step{ padding-inline-start: 0; }
+  /* "Increase inset on touch devices" — the note is the one zone the bible asks
+     to move INTO the flow rather than sit at the edge. */
+  .sc-note{ gap: var(--sp-2) var(--sp-4); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .sc-turn,
+  .sc-turn::before,
+  .sc-rail a{ transition: none; }
+}
+
+@media print{
+  .sc-rail{ display: none; }
+  .sc-stage{ max-block-size: none; }
+  .sc-media-well{ overflow-x: visible; }
+}

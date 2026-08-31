@@ -1,0 +1,451 @@
+/* ============================================================================
+   stagecraft-v2 / motion.css — TIER 2 + TIER 3
+   ----------------------------------------------------------------------------
+   Motion here has three tiers (DECISIONS.md D-002). TIER 1 is state
+   choreography — hover, focus, press — and it lives with its component in
+   components.css, not here. TIER 2 is the blueprint reveal: entrances, rules
+   extending, corner ticks drawing in. TIER 3 is ambient drift, and it is OFF
+   until a page writes data-ambient="on" on <html>.
+
+   TIER 3 PUTS A PAGE OUTSIDE THE AWARD-WINNING WEB UI/UX STYLE BIBLE. The
+   bible forbids ambient motion, because motion must orient, explain, confirm,
+   or express, and a loop does none of those. That is the whole reason Tier 3
+   is an opt-in attribute and is off by default. A page that turns it on has
+   left the law on purpose, and must say so in its own DECISIONS.md.
+
+   THE FIRST RULE THAT GOVERNS THIS FILE: TRANSFORM AND CLIP ONLY, NEVER
+   OPACITY. Every entrance is driven by an IntersectionObserver that the page
+   owns. That observer can fail — the script does not load, the tab never
+   composites, the element never intersects. An opacity fade that never
+   completes hides content forever. A translate that never completes leaves
+   content sitting a few pixels off, or, here, exactly where it belongs. So
+   opacity is banned from this file, and every element must look correct with
+   no class on it at all.
+
+   THE SECOND RULE: THIS FILE NEVER WRITES `transform` AND NEVER WRITES
+   `transition`. Both belong to Tier 1. motion.css loads LAST, so anything it
+   declares beats a component's own rule at equal specificity — and a
+   component that stops answering hover, focus or press is the worst failure
+   this system has. Four verified defects came from exactly that (audit ids 4,
+   14, 15, 16, 18): a stagger pinned `transform:none` over `.sc-card:hover` and
+   the demo's cards stopped lifting; a stagger replaced the whole `transition`
+   shorthand and the card lost its shadow and border easing; an ambient loop
+   outranked the hover lift by animation origin; a retained clip cut the card's
+   shadow away.
+
+   So Tier 2 and Tier 3 move things with the INDEPENDENT transform properties
+   — `translate` and `scale`. The browser MULTIPLIES those with `transform`
+   rather than fighting them for one property, so there is no cascade contest
+   left to lose. A card that is revealed, staggered, drifting or floating still
+   lifts its 4px on hover, because the two values compose. And entrances are
+   one-shot ANIMATIONS, not transitions, so this file never sets `transition`
+   or `transition-delay` on an element that owns its own.
+
+   GREP CHECK: no `transform:` and no `transition:` declaration appears below
+   this line. `transform-origin` is fine — it only steers `scale`.
+
+   This file owns no colour, no layout, and no resting appearance. Every value
+   comes from tokens.css. The one exception is the ambient control block in
+   section 3.0 — see the note there.
+
+   Load order:  tokens.css → base.css → components.css → motion.css
+   ============================================================================ */
+
+
+/* ============================================================================
+   TIER 2 — BLUEPRINT REVEAL
+   Translate, scale and clip. The page adds .is-in; nothing here needs it to be
+   correct. Fill mode is `backwards`, never `both` — see 2.1.
+   ============================================================================ */
+
+/* --------------------------------------------------------------------------
+   2.1 · .sc-reveal — the entrance
+   --------------------------------------------------------------------------
+   The page adds .is-in with an IntersectionObserver when the element enters
+   the viewport. THE RESTING STATE IS THE ARRIVED STATE. An element with no
+   class on it carries no translate at all, so a failed observer leaves the
+   content exactly where it belongs: in place, readable, and interactive. The
+   offset lives inside the keyframe only — the same way .sc-draw and
+   .sc-draw-box already keep their "before" state there.
+
+   FILL MODE IS `backwards`, NEVER `both`. `backwards` covers the stagger delay
+   BEFORE the run and retains NOTHING after it, so the element hands `translate`
+   straight back to its resting value the moment it lands. A retained value
+   would sit above every normal declaration for the life of the page, which is
+   how `.sc-draw-box` lost the card's shadow (audit id 16).
+
+   IT MOVES WITH `translate`, NOT `transform`. `.sc-card:hover` writes
+   `transform`, and the two compose, so a revealed card still lifts. The old
+   `.sc-reveal.is-in{ transform:none }` tied `.sc-card:hover` on specificity
+   and won on source order, and the lift silently never happened (audit id 18).
+
+   Apply to a block, flex, grid, or inline-block element. `translate` does not
+   apply to a plain inline element, and it does not move its neighbours, so a
+   reveal never reflows the page.
+   -------------------------------------------------------------------------- */
+.sc-reveal{
+  --sc-reveal-shift: var(--sp-3);          /* per-element override is fine */
+  --sc-reveal-x: 0;
+  --sc-reveal-y: var(--sc-reveal-shift);
+}
+
+/* Direction variants. Translate only — the distance changes, the safety does
+   not. Each one only re-points the offset the keyframe starts FROM; none of
+   them declares a resting position, so none of them can strand an element. */
+.sc-reveal--up{
+  --sc-reveal-shift: var(--sp-3);
+  --sc-reveal-x: 0;
+  --sc-reveal-y: var(--sc-reveal-shift);
+}
+.sc-reveal--left{
+  --sc-reveal-shift: var(--sp-4);
+  --sc-reveal-x: calc(var(--sc-reveal-shift) * -1);   /* enters from the left */
+  --sc-reveal-y: 0;
+}
+.sc-reveal--right{
+  --sc-reveal-shift: var(--sp-4);
+  --sc-reveal-x: var(--sc-reveal-shift);              /* enters from the right */
+  --sc-reveal-y: 0;
+}
+
+.sc-reveal.is-in,
+.sc-reveal--up.is-in,
+.sc-reveal--left.is-in,
+.sc-reveal--right.is-in{
+  animation: sc-reveal-in var(--m-reveal) var(--ease-out) backwards;
+}
+
+/* The fallbacks are the safety net: an element that somehow reaches this
+   keyframe with no offset declared travels zero distance, rather than
+   dropping the whole declaration and taking an undefined path. */
+@keyframes sc-reveal-in{
+  from{ translate: var(--sc-reveal-x, 0) var(--sc-reveal-y, 0); }
+  to  { translate: 0 0; }
+}
+
+
+/* --------------------------------------------------------------------------
+   2.2 · .sc-reveal-stagger — a list that arrives in sequence
+   --------------------------------------------------------------------------
+   Put the class on the CONTAINER. The container receives .is-in once, and its
+   direct children arrive one step apart. The children need no class and no
+   inline style — the step is a fraction of --m-reveal, so retiming the reveal
+   retimes the stagger with it. The offset variables are declared on the
+   container and INHERIT to the children, so the keyframe resolves on each one.
+
+   THE CHILDREN MAY BE REAL COMPONENTS. This container writes no `transform`
+   and no `transition` onto them, so a `.sc-card` child keeps its own hover
+   lift, its own shadow easing and its own border easing, and still arrives in
+   sequence. The old version set the whole `transition` shorthand here, which
+   REPLACED the card's three-property list and made its shadow and border snap
+   (audit id 14), and pinned `transform:none` over `.sc-card:hover`, which
+   killed the lift outright (audit id 4). Both are gone; the wrapper `<div>`
+   that used to be required is now optional, and harmless either way.
+
+   THE STEP IS AN `animation-delay`, NOT A `transition-delay`. A transition
+   delay stays on the element forever: it was written for a one-time entrance,
+   and it then held every later hover response back by up to 490ms (audit id
+   14, second half). An animation delay belongs to the entrance and dies with
+   it.
+
+   The delay is capped at the eighth child. Past that, everything arrives
+   together. A list of forty rows must not take twelve seconds to finish.
+
+   Do not put a Tier 3 class on a child of this container. Both write
+   `translate`, and the infinite ambient animation would win over the one-shot
+   entrance, which would then never play.
+   -------------------------------------------------------------------------- */
+.sc-reveal-stagger{
+  --sc-stagger-step: calc(var(--m-reveal) / 6);
+  --sc-reveal-shift: var(--sp-3);          /* inherits to every child */
+  --sc-reveal-x: 0;
+  --sc-reveal-y: var(--sc-reveal-shift);
+}
+.sc-reveal-stagger.is-in > *{
+  animation: sc-reveal-in var(--m-reveal) var(--ease-out) backwards;
+}
+
+/* Scoped to .is-in so a child that never reveals carries no delay at all. */
+.sc-reveal-stagger.is-in > :nth-child(2){ animation-delay: calc(var(--sc-stagger-step) * 1); }
+.sc-reveal-stagger.is-in > :nth-child(3){ animation-delay: calc(var(--sc-stagger-step) * 2); }
+.sc-reveal-stagger.is-in > :nth-child(4){ animation-delay: calc(var(--sc-stagger-step) * 3); }
+.sc-reveal-stagger.is-in > :nth-child(5){ animation-delay: calc(var(--sc-stagger-step) * 4); }
+.sc-reveal-stagger.is-in > :nth-child(6){ animation-delay: calc(var(--sc-stagger-step) * 5); }
+.sc-reveal-stagger.is-in > :nth-child(7){ animation-delay: calc(var(--sc-stagger-step) * 6); }
+/* the cap — the eighth child and every child after it share one delay */
+.sc-reveal-stagger.is-in > :nth-child(n+8){ animation-delay: calc(var(--sc-stagger-step) * 7); }
+
+
+/* --------------------------------------------------------------------------
+   2.3 · .sc-draw — a rule or underline that extends
+   --------------------------------------------------------------------------
+   Runs the `scale` property from 0 to 1 on .is-in, from --sc-draw-origin.
+
+   THE DRAWN STATE IS THE DEFAULT. The 0 end of the scale exists only inside
+   the keyframe, so an element with no .is-in on it is a finished, full-width
+   rule — not a rule of zero width. A resting scale of 0 would be invisible,
+   and invisible-until-JS is the failure this file exists to prevent.
+
+   `scale`, not `transform: scaleX()`, and `backwards`, not `both`. The old
+   pair retained `transform: scaleX(1)` on the element for the life of the
+   page, and a retained animation value outranks every normal declaration —
+   so a `.sc-draw` on anything that also owns a Tier 1 transform would have
+   frozen it. transform-origin still steers `scale`, so the origin knob is
+   unchanged.
+
+   Decoration only. A rule, an underline, a tick. Never text, and never the
+   only carrier of a meaning.
+   -------------------------------------------------------------------------- */
+.sc-draw{
+  --sc-draw-origin: left center;
+  transform-origin: var(--sc-draw-origin);
+}
+.sc-draw.is-in{
+  animation: sc-draw var(--m-reveal) var(--ease-out) backwards;
+}
+@keyframes sc-draw{
+  from{ scale: 0 1; }
+  to  { scale: 1 1; }
+}
+
+
+/* --------------------------------------------------------------------------
+   2.4 · .sc-draw-box — corner registration ticks arriving
+   --------------------------------------------------------------------------
+   The ticks themselves belong to the component (.sc-card in components.css).
+   This only draws them in, by pulling a clip-path inset back past the edges.
+
+   CLIP-PATH INSTEAD OF OPACITY, AND THE UN-CLIPPED STATE IS THE SAFE FALLBACK.
+   The clipped state lives inside the keyframe, so the resting element carries
+   no clip-path at all. A failed reveal leaves the ticks FULLY DRAWN rather
+   than invisible. That is the whole point: the failure mode is "the animation
+   did not play", never "the marks are gone".
+
+   THE CLIP MUST NOT SURVIVE THE RUN, AND MUST NOT END ON THE BORDER BOX.
+   This used to end at inset(0) with fill mode `both`, and a comment claimed
+   inset(0) was "visually identical to the resting state". It is not: a
+   clip-path clips at the border box, an outer box-shadow paints outside it,
+   and `both` retains the value forever — so every revealed card lost its
+   --shadow-1 and its hover --shadow-2 for the life of the page (audit id 16).
+   Two changes fix it and neither costs anything:
+
+     · fill mode `backwards` — covers the run's leading edge, retains nothing,
+       so clip-path returns to its own resting value (none) when the run ends.
+       No clip is left behind to clip a shadow, and no containing block is
+       left behind to trap a positioned child.
+     · the last leg bleeds OUTSIDE the border box, by --sc-draw-bleed. The
+       shadow is therefore already un-clipped before the animation hands the
+       property back, so there is no pop at the end. The tick reveal keeps the
+       whole run up to 85%; the last 15% only widens a clip that is already
+       past the edge, which nothing can see except the shadow coming back.
+
+   The keyframe ends at an inset rather than the keyword none, because none
+   does not interpolate from an inset.
+
+   Caution: while it runs, a clip-path clips descendants and creates a
+   containing block for positioned children. Do not put a sticky or fixed
+   element inside one.
+   -------------------------------------------------------------------------- */
+.sc-draw-box{
+  --sc-draw-inset: calc(var(--tick-size) * 2);   /* enough to cover the tick field */
+  --sc-draw-bleed: var(--sp-8);                  /* clears --shadow-2, which reaches
+                                                    ~42px past the box at its widest */
+}
+.sc-draw-box.is-in{
+  animation: sc-draw-box var(--m-reveal) var(--ease-out) backwards;
+}
+@keyframes sc-draw-box{
+  from{ clip-path: inset(var(--sc-draw-inset)); }
+  85% { clip-path: inset(0); }
+  to  { clip-path: inset(calc(var(--sc-draw-bleed) * -1)); }
+}
+
+
+/* --------------------------------------------------------------------------
+   2.5 · .sc-transit — a chapter or view change
+   --------------------------------------------------------------------------
+   For swapping one section for another: a tab panel, a chapter, a filtered
+   view. .sc-transit on its own does nothing. The script adds one state class
+   for the length of --m-transit, then takes it off again.
+
+     .is-entering   the arriving section. Wipes up into place.
+     .is-leaving    the departing section. Wipes away.
+
+   Both states are keyframes, so the resting element has no translate and no
+   clip-path on it. A section that never gets a class is in place and readable.
+
+   `both` IS CORRECT HERE, and it is the only place in this file that keeps it.
+   .is-leaving must hold its off-position until the script unmounts the old
+   section; releasing it early would flash the section back into view. The
+   class itself is transient, so nothing is retained for longer than the swap.
+   The settled ends of both keyframes bleed outside the border box by
+   --sc-transit-bleed for the same reason .sc-draw-box does: a section full of
+   cards must not lose their shadows while it moves.
+
+   MOTION IS NOT THE MECHANISM. .is-leaving moves a section; it does not remove
+   it. The script still hides or unmounts the old section, and still sets
+   hidden / aria-selected. If this file never loads, the swap still works — it
+   just happens instantly.
+   -------------------------------------------------------------------------- */
+.sc-transit{
+  --sc-transit-shift: var(--sp-5);
+  --sc-transit-bleed: var(--sp-8);
+}
+.sc-transit.is-entering{
+  animation: sc-transit-in var(--m-transit) var(--ease-out) both;
+}
+.sc-transit.is-leaving{
+  animation: sc-transit-out var(--m-transit) var(--ease) both;
+}
+@keyframes sc-transit-in{
+  from{ translate: 0 var(--sc-transit-shift); clip-path: inset(100% 0 0 0); }
+  to  { translate: 0 0;                       clip-path: inset(calc(var(--sc-transit-bleed) * -1)); }
+}
+@keyframes sc-transit-out{
+  from{ translate: 0 0;                                  clip-path: inset(calc(var(--sc-transit-bleed) * -1)); }
+  to  { translate: 0 calc(var(--sc-transit-shift) * -1); clip-path: inset(0 0 100% 0); }
+}
+
+
+/* ============================================================================
+   TIER 3 — AMBIENT. OPT-IN, AND OFF BY DEFAULT.
+   ----------------------------------------------------------------------------
+   Every rule below is nested under [data-ambient="on"]. A page that does not
+   set that attribute on <html> gets zero ambient motion — not a slower loop,
+   not a smaller one. Nothing.
+
+   Read the header again before you turn this on. Ambient motion is outside the
+   web bible. It is here because the template needed an honest place to put it,
+   not because it is recommended.
+   ============================================================================ */
+
+/* --------------------------------------------------------------------------
+   3.0 · The ambient control block
+   --------------------------------------------------------------------------
+   tokens.css deliberately holds no ambient value (see its section 11), because
+   the tier lives here behind the opt-in. So these are the file's own knobs, and
+   they are collected in ONE place for the same reason tokens.css exists: no
+   rule below invents a duration of its own.
+
+   They are declared on the opt-in selector, so they do not exist at all on a
+   page that has not opted in.
+
+   Amplitudes are single-digit pixels on purpose. This should read as the sheet
+   breathing, not as something moving.
+   -------------------------------------------------------------------------- */
+[data-ambient="on"]{
+  --sc-drift-x:      6px;
+  --sc-drift-y:      4px;
+  --sc-drift-time:   26s;
+  --sc-drift-slow:   44s;
+  --sc-drift-fast:   16s;
+
+  --sc-float-y:      5px;
+  --sc-float-time:    7s;
+}
+
+/* --------------------------------------------------------------------------
+   3.1 · .sc-drift — a slow wander
+   --------------------------------------------------------------------------
+   A long, low-amplitude path that starts and ends at the origin, so the loop
+   has no seam. will-change is set here and nowhere else: these elements are
+   few and they animate without stopping, which is the only case that earns a
+   compositor layer.
+
+   IT DRIFTS WITH `translate`, SO A HOVER STILL LIFTS. An animation outranks
+   every normal declaration, whatever its specificity, so the old
+   `transform: translate3d(...)` keyframe beat `.sc-card:hover{ transform }`
+   outright: turning ambient on silently removed the lift from three cards on
+   the demo page (audit id 15). `translate` is a separate property that the
+   browser composes with `transform`, so the card now drifts AND lifts, and the
+   two never contend.
+
+   Never put this on an element that also carries a Tier 2 hook. Both write
+   `translate`, and the infinite loop would win, so the entrance would never
+   play.
+   -------------------------------------------------------------------------- */
+[data-ambient="on"] .sc-drift{
+  animation: sc-drift var(--sc-drift-time) var(--ease) infinite;
+  will-change: translate;
+}
+[data-ambient="on"] .sc-drift--slow{ animation-duration: var(--sc-drift-slow); }
+[data-ambient="on"] .sc-drift--fast{ animation-duration: var(--sc-drift-fast); }
+
+@keyframes sc-drift{
+  0%,
+  100%{ translate: 0 0; }
+  25% { translate: var(--sc-drift-x) calc(var(--sc-drift-y) * -1); }
+  50% { translate: 0 calc(var(--sc-drift-y) * -1.6); }
+  75% { translate: calc(var(--sc-drift-x) * -1) calc(var(--sc-drift-y) * -.4); }
+}
+
+/* --------------------------------------------------------------------------
+   3.2 · .sc-float — a few pixels of vertical lift
+   --------------------------------------------------------------------------
+   The parallax-ish one. Shorter cycle than the drift, one axis only. Use it on
+   a badge, a plate, a single mark — not on a block of running text, which is
+   harder to read when it moves under the eye.
+
+   Same composition rule as 3.1: it writes `translate`, so a Tier 1 hover
+   transform on the same element still lands.
+   -------------------------------------------------------------------------- */
+[data-ambient="on"] .sc-float{
+  animation: sc-float var(--sc-float-time) var(--ease) infinite;
+  will-change: translate;
+}
+
+@keyframes sc-float{
+  0%,
+  100%{ translate: 0 0; }
+  50% { translate: 0 calc(var(--sc-float-y) * -1); }
+}
+
+
+/* ============================================================================
+   REDUCED MOTION — TIERS 2 AND 3 ARE REMOVED, NOT SHORTENED
+   ----------------------------------------------------------------------------
+   Every reveal snaps to its finished resting state. Every ambient loop stops.
+   Nothing is left part-way through a reveal, and nothing is left invisible.
+   The resting state IS the arrived state throughout this file, so clearing the
+   animation is already enough: translate:none is the arrived position, and
+   clip-path:none is the fully drawn state. The property resets below are the
+   belt to that braces — they stop a page-level override from stranding an
+   element mid-reveal.
+
+   !important is deliberate here. This is the safety net for the whole file,
+   and a page-level override must not be able to reintroduce motion a person
+   has asked their system to stop.
+
+   TIER 1 IS NOT TOUCHED, AND THAT IS NOW LITERALLY TRUE. This block used to
+   reset `transform` and `transition` with !important, which reached straight
+   into Tier 1's two properties and would have flattened a component's hover
+   and press states from inside the motion file — the same failure the rest of
+   this file was just repaired for. This file writes neither property, so it
+   resets neither. components.css reduces its own hover and press states to
+   instant, and base.css already clears transition and animation globally.
+
+   A view swap still swaps. Only the movement is gone.
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce){
+  .sc-reveal,
+  .sc-reveal--up,
+  .sc-reveal--left,
+  .sc-reveal--right,
+  .sc-reveal-stagger,
+  .sc-reveal-stagger > *,
+  .sc-draw,
+  .sc-draw-box,
+  .sc-transit,
+  .sc-transit.is-entering,
+  .sc-transit.is-leaving,
+  [data-ambient="on"] .sc-drift,
+  [data-ambient="on"] .sc-drift--slow,
+  [data-ambient="on"] .sc-drift--fast,
+  [data-ambient="on"] .sc-float{
+    animation: none !important;
+    translate: none !important;
+    scale: none !important;
+    clip-path: none !important;
+    will-change: auto !important;
+  }
+}

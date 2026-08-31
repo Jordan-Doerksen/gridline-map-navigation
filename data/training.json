@@ -1,0 +1,51 @@
+{
+  "gridExercises": [
+    {
+      "id": "cabin",
+      "label": "Survey cabin",
+      "symbol": "CAB",
+      "easting": "34",
+      "northing": "51",
+      "mapX": 385,
+      "mapY": 265,
+      "clue": "Find the red target inside one grid square. Name the line on its left, then the line below it."
+    },
+    {
+      "id": "shelter",
+      "label": "Pine shelter",
+      "symbol": "SH",
+      "easting": "33",
+      "northing": "50",
+      "mapX": 295,
+      "mapY": 355,
+      "clue": "The shelter sits west of the stream and north of the trail bend."
+    },
+    {
+      "id": "bridge",
+      "label": "Footbridge",
+      "symbol": "BR",
+      "easting": "36",
+      "northing": "52",
+      "mapX": 565,
+      "mapY": 175,
+      "clue": "Look where the trail crosses the blue watercourse."
+    },
+    {
+      "id": "trig",
+      "label": "Trig point",
+      "symbol": "TP",
+      "easting": "32",
+      "northing": "53",
+      "mapX": 205,
+      "mapY": 85,
+      "clue": "The trig point is on the highest closed contour in the northwest."
+    }
+  ],
+  "fieldRoutine": [
+    "Orient the map so map north matches ground north.",
+    "Locate yourself using two or more known features.",
+    "Choose a clear handrail such as a trail, ridge, or stream.",
+    "Set a catching feature beyond the destination.",
+    "Confirm the route as the terrain changes."
+  ]
+}

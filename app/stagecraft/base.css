@@ -1,0 +1,614 @@
+/* ============================================================================
+   stagecraft-v2 / base.css — GROUND, TYPE, CHROME
+   ----------------------------------------------------------------------------
+   Layer 2 of 4. Load order: tokens.css → base.css → components.css → motion.css
+
+   This file owns the page itself: the reset, the paper ground and its drafting
+   grid, typography defaults, links, the focus ring, the top bar, the footer,
+   print, and the reduced-motion baseline.
+
+   It owns NO components. Buttons, chips, tags, cards, rows, inputs, segmented
+   controls, attention bands and meters belong to components.css. A duplicate
+   rule here would collide with that file, so there are none.
+
+   THE ONE RULE: no raw colour, duration, radius, shadow, or spacing value
+   appears below. Every such value is a var() from tokens.css. The only bare
+   numbers are structural — 0, 1px hairlines, 100%, 50%, fr units, and the
+   media-query breakpoints, which are layout structure rather than style.
+   ============================================================================ */
+
+
+/* ============================================================================
+   1 · RESET
+   Targeted, not scorched. `*{margin:0}` also flattens things components.css
+   expects to have their own spacing, so only the elements that ship with
+   unwanted browser margin are zeroed.
+   ============================================================================ */
+
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html,body,
+h1,h2,h3,h4,h5,h6,
+p,figure,blockquote,
+dl,dd,ol,ul{ margin: 0; padding: 0; }
+
+html{
+  /* Stops iOS inflating text after a rotation, which breaks the measure. */
+  -webkit-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+
+  /* Tells the UA to render scrollbars and native controls on a light ground.
+     Without it a dark-set OS paints a dark scrollbar against the paper. */
+  color-scheme: light;
+
+  scroll-behavior: smooth;
+
+  /* Clearance for the sticky bar when an in-page anchor (the skip link) lands.
+     Sized above the bar's real height so the target is never hidden under it. */
+  scroll-padding-top: var(--sp-8);
+}
+
+/* Media never widens the page. This is half of the no-scroll-at-375px rule. */
+img,svg,video,canvas{ max-width: 100%; height: auto; display: block; }
+
+/* The other half: a long unbroken URL wraps instead of pushing the page wide. */
+body{ overflow-wrap: break-word; }
+
+/* Preformatted content scrolls inside itself rather than widening the page. */
+pre{ overflow-x: auto; }
+
+/* Form elements inherit the page face. Their APPEARANCE — fill, border, radius,
+   states — is components.css's job, not this file's. */
+button,input,select,textarea{ font: inherit; color: inherit; }
+
+::selection{ background: var(--signal-tint); color: var(--ink); }
+
+
+/* ============================================================================
+   2 · THE PAGE GROUND
+   ============================================================================ */
+
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+
+  min-height: 100vh;
+  min-height: 100dvh;   /* dvh where supported: 100vh over-counts on mobile,
+                           because the URL bar is not subtracted. */
+
+  /* Nothing may scroll sideways. Anything genuinely wide gets its own
+     overflow container inside components.css. */
+  overflow-x: hidden;
+
+  /* Column layout so min-height means something: the footer settles at the
+     bottom of a short page instead of floating mid-screen.
+     NOTE: body::before below is position:fixed, so it is out of flow and does
+     NOT become a flex item. That trap is why the grid is fixed, not absolute. */
+  display: flex;
+  flex-direction: column;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+body > main{ flex: 1 0 auto; }
+
+
+/* ============================================================================
+   3 · THE DRAFTING GRID
+   ----------------------------------------------------------------------------
+   Four repeating gradients — no image, no request, nothing to fail to load.
+   It is DECORATION AND NOTHING ELSE. If it never paints, the page is unchanged.
+
+   `transparent` in the gradient stops is the absence of paint, not a chosen
+   colour, and it is what lets all four layers show through each other. Painting
+   the gaps in --paper instead would make the top layer occlude the rest.
+
+   Paint order note: a positioned pseudo-element at z-index 0 paints ABOVE
+   static in-flow content. That is why .sc-wrap, .sc-bar and .sc-foot below all
+   raise themselves. Page content belongs inside one of those three — anything
+   left outside them sits under the ruling.
+   ============================================================================ */
+
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    /* major ruling first in source, so the minor lines draw over it and the
+       crossings stay the darker colour */
+    repeating-linear-gradient(to right,
+      var(--grid-major) 0 1px, transparent 1px var(--grid-major-step)),
+    repeating-linear-gradient(to bottom,
+      var(--grid-major) 0 1px, transparent 1px var(--grid-major-step)),
+    repeating-linear-gradient(to right,
+      var(--grid-minor) 0 1px, transparent 1px var(--grid-minor-step)),
+    repeating-linear-gradient(to bottom,
+      var(--grid-minor) 0 1px, transparent 1px var(--grid-minor-step));
+}
+
+
+/* ============================================================================
+   4 · FOCUS — one ring, everywhere, no exceptions
+   ----------------------------------------------------------------------------
+   Declared once, unscoped, so it reaches every focusable element including the
+   ones components.css introduces later. components.css loads after this file
+   and can specialise the ring; it cannot accidentally lose it.
+
+   No `:focus{outline:none}` companion rule. Modern browsers already withhold
+   the ring from pointer input, and suppressing :focus by hand is how keyboard
+   users end up with nothing.
+   ============================================================================ */
+
+:focus-visible{
+  outline: var(--focus-ring) solid var(--focus-color);
+  outline-offset: var(--focus-offset);
+}
+
+
+/* ============================================================================
+   5 · SKIP LINK
+   ----------------------------------------------------------------------------
+   First focusable element on every page. Parked above the viewport by transform
+   rather than display:none or visibility:hidden, because both of those remove
+   it from the tab order and a skip link that cannot be focused is decoration.
+
+   It lands inset by --sp-2 rather than flush in the corner so the focus ring,
+   which sits --focus-offset OUTSIDE the fill, is not clipped by the viewport
+   edge. The ring reads because that offset puts --signal on --paper (7.1:1),
+   not on the signal fill it would otherwise vanish into.
+   ============================================================================ */
+
+.sc-skip{
+  position: fixed;
+  top: var(--sp-2);
+  left: var(--sp-2);
+  z-index: var(--z-toast);
+
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+
+  background: var(--signal);
+  color: var(--on-signal);
+
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  text-decoration: none;
+
+  /* parked clear of the viewport, ring included */
+  transform: translateY(calc(-100% - var(--sp-8)));
+  transition: transform var(--m-orient) var(--ease);
+}
+
+.sc-skip:focus{ transform: translateY(0); }
+
+
+/* ============================================================================
+   6 · CONTAINER
+   ============================================================================ */
+
+.sc-wrap{
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+
+  /* raised out of the grid's paint layer — see section 3 */
+  position: relative;
+  z-index: var(--z-base);
+}
+
+
+/* ============================================================================
+   7 · TYPOGRAPHY DEFAULTS
+   ----------------------------------------------------------------------------
+   Four display levels and no more. h5/h6 keep the body face on purpose: a
+   document that needs six heading levels needs restructuring, not a fifth size.
+   ============================================================================ */
+
+h1,h2,h3,h4{
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: var(--track-tight);
+  text-wrap: balance;   /* ignored where unsupported; nothing depends on it */
+}
+
+h1{ font-size: var(--t-stage);   line-height: var(--lh-tight); }
+h2{ font-size: var(--t-chapter); line-height: var(--lh-tight); }
+h3{ font-size: var(--t-section); line-height: var(--lh-snug);  }
+h4{ font-size: var(--t-index);   line-height: var(--lh-snug);  }
+
+p{
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+a{
+  color: var(--signal);
+  text-decoration: underline;
+
+  /* --underline-offset is 2px. 4px reads detached at body size. The token was
+     added mid-build — DECISIONS.md Change Log, 2026-08-28. */
+  text-underline-offset: var(--underline-offset);
+
+  transition: color var(--m-orient) var(--ease);
+}
+
+a:hover{ color: var(--signal-deep); }
+
+
+/* ============================================================================
+   8 · THE LABEL DEVICE
+   ----------------------------------------------------------------------------
+   The recurring folio mark — mono, uppercase, tracked out, quiet. It appears on
+   cards, sections, footers and status lines, which is exactly why it lives in
+   base and not in any one component.
+   ============================================================================ */
+
+.sc-label{
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  line-height: var(--lh-snug);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* --rule prefixes a short signal tick, the way a drawing labels a callout. */
+.sc-label--rule{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.sc-label--rule::before{
+  content: "";
+  flex: none;
+  width: var(--sp-5);
+  height: 1px;
+  background: var(--signal);
+}
+
+
+/* ============================================================================
+   9 · LEDE + RUNNING COPY
+   ============================================================================ */
+
+.sc-lede{
+  max-width: var(--measure-tight);
+  font-size: var(--t-index);
+  line-height: var(--lh-snug);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.sc-copy{
+  max-width: var(--measure);
+  color: var(--ink);
+}
+
+/* Secondary passages. `strong` below deliberately climbs back to full ink, so
+   the emphasis still reads inside a muted block. */
+.sc-copy--muted{ color: var(--muted); }
+
+.sc-copy > * + *{ margin-top: var(--sp-4); }
+.sc-copy > * + h2,
+.sc-copy > * + h3,
+.sc-copy > * + h4{ margin-top: var(--sp-6); }
+
+.sc-copy strong,
+.sc-copy b{ color: var(--ink); font-weight: 600; }
+
+
+/* ============================================================================
+   10 · TOP BAR
+   ----------------------------------------------------------------------------
+   Sticky, on a white sheet, over the paper. The fill is opaque --surface.
+
+   NO backdrop-filter, and therefore no @supports fallback: a translucent bar
+   needs a blur radius and a mix ratio, and tokens.css defines neither. Inventing
+   them here would be the exact defect this file is written to avoid. An opaque
+   bar also cannot become unreadable over whatever scrolls beneath it, which is
+   the better behaviour anyway.
+
+   --line-soft is legal for this border because the bar is already separated
+   from the page by white-on-paper contrast. The rule is decoration, not the
+   thing that makes the bar perceivable.
+   ============================================================================ */
+
+.sc-bar{
+  position: sticky;
+  top: 0;
+  z-index: var(--z-chrome);
+
+  background: var(--surface);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.sc-bar-in{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: var(--sp-4) var(--gutter);
+}
+
+
+/* --- wordmark ------------------------------------------------------------- */
+
+.sc-mark{
+  /* THE WORDMARK DOES NOT SHRINK, and `min-width: 0` was making it worse
+     rather than better.
+
+     It used to read `min-width: 0` with a note claiming the flex row could
+     shrink instead of overflowing — but min-width:0 does not PREVENT overflow, it PERMITS
+     the box to shrink while `white-space: nowrap` keeps the text at full
+     width. With no `overflow` set, the text simply spilled out of its box and
+     painted over the nav beside it. Measured on proof/instrument.html:
+     "DATUM DESK" begins colliding with the Register link at 980px and stays
+     collided all the way down to the 620px breakpoint. That is an ordinary
+     laptop window, not an edge case.
+
+     Ellipsising a wordmark is not the answer either — a brand truncated to
+     "DATUM DE…" is worse than a tight bar. So the wordmark holds its size and
+     the row gives elsewhere: the nav's gap tightens first, then a page's own
+     secondary actions shed, and only then does the 620px rule drop links.
+     Least important thing gives first. */
+  flex: none;
+
+  font-family: var(--mono);
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.sc-mark b{ color: var(--signal); font-weight: 600; }
+
+
+/* --- nav ------------------------------------------------------------------ */
+
+.sc-nav{
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+}
+
+/* THE FIRST THING TO GIVE IS THE GAP, because it costs nothing to read. Four
+   gaps at --sp-6 buy back most of a mid-width squeeze before any content has
+   to leave, and a second step buys the last stretch above the 620px rule —
+   which is what keeps all five links alive down to it instead of dropping
+   four of them at 680 to save 33px. */
+@media (max-width: 1000px){
+  .sc-nav{ gap: var(--sp-4); }
+}
+@media (max-width: 700px){
+  .sc-nav{ gap: var(--sp-2); }
+}
+
+.sc-nav a{
+  position: relative;
+  padding-block: var(--sp-2);
+
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--muted);
+
+  transition: color var(--m-orient) var(--ease);
+}
+
+/* The underline grows in from the left and retracts to the right, so entering
+   and leaving read as different gestures rather than the same one reversed. */
+.sc-nav a::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--m-orient) var(--ease);
+}
+
+.sc-nav a:hover,
+.sc-nav a:focus-visible{ color: var(--ink); }
+
+.sc-nav a:hover::after,
+.sc-nav a:focus-visible::after{
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* The current page is a STATE, and it is carried three ways — colour, weight,
+   and a standing rule — so it survives both reduced motion and colour blindness.
+   aria-current itself carries it for assistive tech. */
+.sc-nav a[aria-current="page"]{
+  color: var(--signal);
+  font-weight: 700;
+}
+
+.sc-nav a[aria-current="page"]::after{
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+
+/* --- narrow widths: re-author, do not shrink ------------------------------ */
+/* Breakpoints are layout structure, so they are the only px below that is not
+   a hairline. Both cuts are safe because every nav destination is also linked
+   from the footer, which is never hidden. */
+
+@media (max-width: 620px){
+  /* Keep the first link only. A five-item mono nav does not survive a wrap.
+     THIS IS THE LAST RESORT AND IT SHOULD STAY LAST — a bar that drops
+     navigation while it is still showing a keyboard hint has its priorities
+     backwards. Everything above sheds first. */
+  .sc-nav a + a{ display: none; }
+}
+
+@media (max-width: 430px){
+  /* Below this the bar is the wordmark and nothing else. */
+  .sc-nav{ display: none; }
+}
+
+
+/* ============================================================================
+   11 · FOOTER
+   ============================================================================ */
+
+.sc-foot{
+  /* raised out of the grid's paint layer — see section 3 */
+  position: relative;
+  z-index: var(--z-base);
+
+  margin-top: var(--sp-9);
+  padding-block: var(--sp-8);
+
+  background: var(--paper-deep);
+  border-top: 1px solid var(--line-strong);
+}
+
+.sc-foot-grid{
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--sp-7) var(--sp-6);
+
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@media (max-width: 760px){
+  /* One column. Three narrow columns of mono labels stop being a grid and
+     start being three ragged stripes. */
+  .sc-foot-grid{ grid-template-columns: 1fr; gap: var(--sp-6); }
+}
+
+.sc-colophon{
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  margin-top: var(--sp-7);
+  padding-inline: var(--gutter);
+  padding-top: var(--sp-5);
+  /* an emphasis rule: the heavier of the two widths, and --line-strong rather
+     than --line-soft, so the page's largest division is not the same class of
+     line as a divider inside a list. (D-010) */
+  border-top: var(--rule-w-emph) solid var(--line-strong);
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+
+  /* --muted, not --ink-dim. The footer is the third ground, and it is the one
+     the tokens.css contrast block does not measure: --ink-dim (#626E7C) on
+     --paper-deep (#E7EBF1) is 4.34:1, under the 4.5:1 AA minimum for normal
+     text. --muted (#4E5A68) on the same ground is 5.88:1. */
+  color: var(--muted);
+}
+
+
+/* ============================================================================
+   12 · PRINT
+   ----------------------------------------------------------------------------
+   Paper is already the ground, so printing mostly means removing the parts that
+   only exist on screen: the ruling, the sticky bar, the skip link.
+
+   --surface IS pure white, so it is the correct token for the printed ground.
+   --print-ink is pure black, which is what ink should be on paper; the screen
+   --ink is deliberately not. The token was added mid-build — DECISIONS.md
+   Change Log, 2026-08-28.
+   ============================================================================ */
+
+@media print{
+  body::before,
+  .sc-bar,
+  .sc-skip{ display: none !important; }
+
+  body{
+    background: var(--surface);
+    color: var(--print-ink);
+    min-height: 0;
+    display: block;
+  }
+
+  .sc-wrap,
+  .sc-foot-grid,
+  .sc-colophon{
+    max-width: 100%;
+    padding-inline: 0;
+  }
+
+  .sc-foot{
+    background: var(--surface);
+    margin-top: var(--sp-7);
+    padding-block: var(--sp-5);
+  }
+
+  /* Coloured links are meaningless on paper; the underline still marks them. */
+  a{ color: var(--ink); }
+
+  h1,h2,h3,h4{ break-after: avoid; }
+  p{ orphans: 3; widows: 3; }
+}
+
+
+/* ============================================================================
+   13 · REDUCED MOTION — the baseline
+   ----------------------------------------------------------------------------
+   Transitions and animations off, page-wide. Tiers 2 and 3 are killed properly
+   in motion.css; this is the floor under everything.
+
+   `transition:none` rather than a near-zero duration, because a duration here
+   would be a raw literal — and because none is what is actually meant.
+
+   Every state in this file stays readable with zero motion:
+     · the skip link still lands on focus (the transform still applies, just
+       instantly)
+     · the nav underline still appears on hover and focus
+     · the current page still reads by colour, weight and a standing rule
+     · the focus ring never animated in the first place
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after{
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
