@@ -1,0 +1,38 @@
+{
+  "sheet-basics": [
+    { "title": "Read the sheet", "termIds": ["map-body", "neatline", "margin", "legend"] },
+    { "title": "Check its authority", "termIds": ["nts", "edition", "datum"] },
+    { "title": "Find its controls", "termIds": ["scale", "scale-bar", "contour-interval", "declination"] }
+  ],
+  "grid-references": [
+    { "title": "Read the grid", "termIds": ["easting", "northing", "grid-square", "grid-north"] },
+    { "title": "Shape the answer", "termIds": ["four-figure", "six-figure", "precision"] },
+    { "title": "Add full context", "termIds": ["mgrs", "datum"] }
+  ],
+  "scale-distance": [
+    { "title": "Read the scale", "termIds": ["scale", "representative-fraction", "scale-bar"] },
+    { "title": "Measure movement", "termIds": ["route-distance", "pace-count"] }
+  ],
+  "contours-terrain": [
+    { "title": "Read height", "termIds": ["contour", "contour-interval", "elevation", "relief", "slope"] },
+    { "title": "Name the shape", "termIds": ["ridge", "spur", "valley", "saddle"] }
+  ],
+  "north-compass": [
+    { "title": "Name the reference", "termIds": ["true-north", "grid-north", "magnetic-north"] },
+    { "title": "Express direction", "termIds": ["bearing", "declination"] }
+  ],
+  "route-planning": [
+    { "title": "Build the route", "termIds": ["route-leg", "handrail", "checkpoint", "attack-point"] },
+    { "title": "Detect an error", "termIds": ["catching-feature", "stop-condition", "last-confirmed-position"] },
+    { "title": "Record the leg", "termIds": ["bearing", "route-distance"] }
+  ],
+  "field-practice": [
+    { "title": "Before moving", "termIds": ["orient-map", "route-leg", "handrail"] },
+    { "title": "While moving", "termIds": ["checkpoint", "pace-count", "catching-feature"] },
+    { "title": "When uncertain", "termIds": ["stop-condition", "last-confirmed-position"] }
+  ],
+  "foundation-check": [
+    { "title": "Demonstrate the grid", "termIds": ["four-figure", "six-figure", "precision"] },
+    { "title": "Demonstrate the course", "termIds": ["demonstration", "bearing", "route-leg", "catching-feature"] }
+  ]
+}

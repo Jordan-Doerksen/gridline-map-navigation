@@ -9,7 +9,7 @@ export default function Home() {
       <header className="sc-bar">
         <div className="sc-bar-in">
           <a className="sc-mark" href="#top">Grid<b>line</b> / Foundations</a>
-          <nav className="sc-nav" aria-label="Course navigation"><a href="#course">Modules</a><a href="#method">Method</a><a href="#start">Start</a></nav>
+          <nav className="sc-nav" aria-label="Course navigation"><a href="#course">Modules</a><a href="#method">Method</a><Link href="/glossary">Glossary</Link></nav>
         </div>
       </header>
 

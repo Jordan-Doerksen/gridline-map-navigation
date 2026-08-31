@@ -9,7 +9,7 @@ Turn the existing Day 1 grid-reference trainer into a complete beginner foundati
 After completing the course, a learner should be able to:
 
 1. audit a map sheet for title/date, scale, legend, datum/grid, contour interval, and declination information;
-2. read four-, six-, and eight-figure numeric grid references as square, 100 m, and 10 m precision respectively, without claiming survey accuracy;
+2. read four-, six-, and eight-figure numeric grid references as square, 100 m, and 10 m precision respectively, speak them digit by digit in equal easting/northing halves, and avoid claiming survey accuracy;
 3. convert common 1:50 000 and 1:250 000 paper distances to ground distance;
 4. identify hills, depressions, valleys, spurs, ridges, saddles, and slope steepness from contours;
 5. distinguish true, grid, and magnetic north and know that the map's current declination information governs conversion;
@@ -21,6 +21,7 @@ After completing the course, a learner should be able to:
 
 - A lightweight course doorway introduces the sequence and links to eight independently addressable module pages.
 - Each module page has a clear outcome, deeper explanation, worked example or visualization, learner action, common-error review, and next-module path.
+- Each module page presents an authored, learning-order sequence of active terminology in a collapsible follow-along window; a robust alphabetical and searchable course glossary expands every abbreviation and consolidates the definitions.
 - Lessons favour a rule, a visual explanation, and a quick learner action over uninterrupted long prose.
 - Two or more compact data visualizations explain coordinate precision and terrain/route effort.
 - Progress is session-local only; no account, location collection, or persistence.
@@ -47,8 +48,10 @@ This is preparation, not qualification. It must not imply that a learner can saf
 - Every module route has distinct title/description metadata and previous/next navigation.
 - Existing grid answers remain correct for the illustrated 1 km squares.
 - The course states “right, then up” and distinguishes square identification from point precision.
+- Spoken examples use individual digits with a brief easting/northing pause, and the learner sees one complete worked answer before the unprompted exercise.
 - 1:50 000 is shown as 1 cm = 500 m; 1:250 000 as 1 cm = 2.5 km.
 - Contours are described as equal-elevation lines; closer spacing means a steeper slope for the same contour interval.
+- Synthetic contour drawings do not cross or overlap invalidly; adjacent rises use a connected outer contour and separated higher contours to show a saddle.
 - Grid, true, and magnetic north are visually distinct and no fixed declination conversion is presented as universal.
 - At least two visualizations have text equivalents.
 - Keyboard, narrow-screen, reduced-motion, correct-answer, and incorrect-answer paths remain usable.

@@ -29,6 +29,20 @@ function SheetPractice() {
 function GridPractice() {
   return <>
     <PracticeHeading label="Practice surface" title="Build accuracy from the square outward." copy="Complete the four-figure fixes first, then use the precision visualization to refine the same square without changing the reading order." />
+    <section className="module-voice-card sc-card" aria-labelledby="voice-grid-title">
+      <div><p className="sc-label sc-label--rule">See one first / Survey cabin</p><h3 id="voice-grid-title">This is what a complete answer looks like.</h3><p>On the training map, CAB is inside the square whose left edge is easting 34 and whose bottom edge is northing 51.</p></div>
+      <ol className="module-worked-grid">
+        <li><span>01</span><p>Read the vertical line on the left: <strong>34</strong></p></li>
+        <li><span>02</span><p>Read the horizontal line below: <strong>51</strong></p></li>
+        <li><span>03</span><p>Join them in that order: <strong>3451</strong></p></li>
+      </ol>
+      <p className="module-spoken-answer"><span>Say it aloud</span><strong>three four <b>—</b> five one</strong><small>The dash is a brief pause between easting and northing. Do not write the dash.</small></p>
+      <div className="module-voice-examples">
+        <article><span>4-figure shape</span><strong>34 | 51</strong><p>2 eastings <b>—</b> 2 northings</p></article>
+        <article><span>6-figure shape</span><strong>347 | 516</strong><p>3 eastings <b>—</b> 3 northings</p></article>
+        <article><span>8-figure shape</span><strong>3472 | 5168</strong><p>4 eastings <b>—</b> 4 northings</p></article>
+      </div>
+    </section>
     <GridLab />
     <div className="module-practice-gap"><PrecisionChart /></div>
   </>;

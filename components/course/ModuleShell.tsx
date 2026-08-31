@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, BookOpen, Clock3, ExternalLink, Target } from 'lucide-react';
 import training from '@/data/training.json';
 import lessons from '@/data/module-lessons.json';
+import { TermWindow } from './TermWindow';
 
 type CourseModule = (typeof training.modules)[number];
 type Lesson = (typeof lessons)[keyof typeof lessons];
@@ -17,7 +18,7 @@ export function ModuleShell({ module, lesson, children }: { module: CourseModule
       <header className="sc-bar">
         <div className="sc-bar-in">
           <Link className="sc-mark" href="/">Grid<b>line</b> / Foundations</Link>
-          <nav className="sc-nav" aria-label="Module navigation"><Link href="/">Course door</Link><a href="#drill">Drill</a><a href="#sources">Sources</a></nav>
+          <nav className="sc-nav" aria-label="Module navigation"><Link href="/">Course door</Link><Link href="/glossary">Glossary</Link><a href="#drill">Drill</a></nav>
         </div>
       </header>
 
@@ -41,6 +42,8 @@ export function ModuleShell({ module, lesson, children }: { module: CourseModule
         <nav className="module-rail sc-wrap" aria-label="All course modules">
           {training.modules.map((item) => <Link className={item.slug === module.slug ? 'is-current' : ''} aria-current={item.slug === module.slug ? 'page' : undefined} href={`/modules/${item.slug}`} key={item.slug}><span>{item.number}</span><strong>{item.short}</strong></Link>)}
         </nav>
+
+        <TermWindow moduleSlug={module.slug} />
 
         <section className="module-outcomes sc-wrap" aria-labelledby="outcomes-title">
           <div><p className="sc-label sc-label--rule">Lesson target</p><h2 id="outcomes-title">By the end, you can…</h2></div>

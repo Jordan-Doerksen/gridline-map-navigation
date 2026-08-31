@@ -51,6 +51,7 @@
     "outcomes": [
       "Read eastings before northings and identify the southwest corner of a grid square.",
       "Split four-, six-, and eight-figure numeric references into equal easting and northing halves.",
+      "Speak a numeric reference digit by digit with a clear easting-to-northing break.",
       "Distinguish nominal grid precision from real plotting or measurement accuracy."
     ],
     "sections": [
@@ -84,12 +85,18 @@
       },
       {
         "kicker": "Communication",
-        "title": "Repeat the frame, not only the digits",
+        "title": "Write it solid; say every digit",
         "paragraphs": [
           "Local numeric digits are enough only when everyone is already using the same map, grid zone, and 100 km square. Outside that shared context, include the designators required by the coordinate system and state the datum or map source when ambiguity matters.",
-          "When receiving a reference, split it into equal halves and read it back before plotting. This catches transposed digits and uneven precision before they become navigation errors."
+          "Speak a numeric grid reference one digit at a time. Use a brief pause between the easting half and northing half: 3451 is ‘three four — five one,’ not ‘thirty-four fifty-one.’ The pause preserves the right-then-up structure without adding a word to the reference.",
+          "The goal here is a clear, repeatable answer shape: equal easting and northing halves, each digit spoken separately. When receiving a reference, repeat the complete reference before plotting it."
         ],
-        "bullets": []
+        "bullets": [
+          "Four figures: 3451 → ‘three four — five one.’",
+          "Six figures: 347516 → ‘three four seven — five one six.’",
+          "Eight figures: 34725168 → ‘three four seven two — five one six eight.’",
+          "Use the worked cabin example as the model before attempting an unprompted target."
+        ]
       }
     ],
     "mistakes": [
@@ -103,7 +110,7 @@
         "Plot five four-figure references on a gridded map.",
         "Choose a point inside each square and refine it to six figures.",
         "Give the plotted points to a partner or return later and recover them from the references.",
-        "Read every answer back as equal easting and northing halves."
+        "Read every answer back digit by digit, with one brief pause between the equal easting and northing halves."
       ],
       "finish": "Aim for ten correct plots in a row before increasing precision or speed."
     }

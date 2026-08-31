@@ -2,7 +2,7 @@
 
 ## Flow
 
-`data/training.json` supplies course navigation, exercise values, and reusable examples while `data/module-lessons.json` owns deeper lesson copy → `app/page.tsx` renders the lightweight doorway → `app/modules/[slug]/page.tsx` resolves a lesson and metadata → the shared module shell composes narrative and domain-specific exercise components → Stagecraft layers establish the visual system.
+`data/training.json` supplies course navigation, exercise values, and reusable examples while `data/module-lessons.json` owns deeper lesson copy, `data/glossary.json` owns canonical terminology, and `data/lesson-terms.json` authors the teaching order for each lesson → `app/page.tsx` renders the lightweight doorway → module routes compose the follow-along term window, narrative, and domain-specific practice → `/glossary` searches the same canonical definitions → Stagecraft layers establish the visual system.
 
 ## Owned surfaces
 
@@ -10,10 +10,15 @@
 |---|---|---|
 | `data/training.json` | Exercise prompts, target coordinates, and lesson copy | Add or correct beginner exercises without changing UI logic |
 | `data/module-lessons.json` | Per-module objectives, explanations, mistakes, drills, and summaries | Deepen an approved lesson without changing route logic |
+| `data/glossary.json` | Canonical terms, abbreviations, definitions, and module ownership | Define a term once before using it in a lesson |
+| `data/lesson-terms.json` | Page-specific glossary sections and term order | Group terms in the order the lesson needs them, not alphabetically |
 | `app/page.tsx` | Lightweight course doorway and module discovery | Keep orientation concise; link rather than duplicate lessons |
 | `app/modules/[slug]/page.tsx` | Dynamic module routing and per-page metadata | Resolve approved slugs and preserve social metadata boundaries |
 | `components/course/ModuleShell.tsx` | Shared module header, rail, narrative, and previous/next navigation | Improve every lesson's structure consistently |
 | `components/course/ModuleContent.tsx` | Domain-specific diagrams, exercises, and examples per module | Change one module's teaching surface without affecting others |
+| `components/course/TermWindow.tsx` | Collapsible follow-along terminology for the current lesson | Keep definitions concise and sourced from the glossary data |
+| `components/course/GlossaryIndex.tsx` | Client-side search over canonical terminology | Improve finding and filtering without duplicating definitions |
+| `app/glossary/page.tsx` | Course-wide glossary route and metadata | Maintain the index shell and links back to the course |
 | `components/course/GridLab.tsx` | Four-figure grid practice state and answer checking | Add grid targets or feedback paths |
 | `components/course/CourseLabs.tsx` | Contour, scale, compass, and field-card interactions | Add small exercises within the approved syllabus |
 | `components/course/CourseVisuals.tsx` | Precision and elevation/effort charts with text summaries | Adjust verified synthetic datasets or chart annotations |

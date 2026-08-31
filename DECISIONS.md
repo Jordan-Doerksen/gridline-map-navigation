@@ -42,6 +42,18 @@ The root route is a fast orientation surface, not the complete textbook. Eight s
 
 **Change rule:** substantial lesson content belongs to its module route. Keep the doorway concise and do not duplicate full explanations across routes.
 
+## D-008 — Spoken grid references preserve the two halves
+
+Numeric grid references are written as one even-length string and spoken one digit at a time, with a brief cadence break between the easting and northing halves. The lesson shows one fully worked, speakable cabin answer before asking for an unprompted answer. Formal radio procedure is outside this foundation explanation.
+
+**Change rule:** keep the example focused on the answer shape. Add formal radio procedure only as a separately sourced lesson when explicitly needed.
+
+## D-009 — Terminology follows the learner
+
+Every lesson owns a short, authored sequence of term groups that appears in a collapsible follow-along window. The full glossary is alphabetical, searchable, and expands abbreviations. Definitions are written once in `data/glossary.json`; lesson-specific grouping and order live in `data/lesson-terms.json`, so lesson help and the index cannot silently disagree.
+
+**Change rule:** define a new technical term in the glossary before using it in instructional content. Keep the lesson window short enough to function as a reference, not a second lesson.
+
 ## Change log
 
 - 2026-08-31 — Initial Day 1 lesson architecture and Stagecraft v2 adoption recorded before implementation.
@@ -51,3 +63,5 @@ The root route is a fast orientation surface, not the complete textbook. Eight s
 - 2026-08-31 — Expanded Day 1 into an eight-module beginner foundation; corrected the orientation lesson to distinguish grid, true, and magnetic north; added Canadian primary-source links, two teaching visualizations, scale/distance practice, terrain forms, bearing concepts, route construction, and a progressive field-practice plan.
 - 2026-08-31 — Added a public-repository README so the validated course can be cloned and run independently of the temporary local preview.
 - 2026-08-31 — Refactored the long course into a lightweight doorway and eight deeper, independently addressable module pages with shared navigation and lesson metadata.
+- 2026-08-31 — Added a fully worked cabin answer, digit-by-digit speaking cadence, and visible four-, six-, and eight-figure answer shapes before the grid exercise.
+- 2026-08-31 — Replaced overlapping hill contours with a valid connected lower contour and separate higher contours, added per-lesson collapsible term windows, and added the searchable course glossary.
