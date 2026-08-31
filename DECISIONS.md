@@ -36,6 +36,12 @@ The course uses compact visualizations for nominal grid precision and terrain ef
 
 **Change rule:** new charts need a named learning question and must work without hover.
 
+## D-007 — Doorway plus deep module pages
+
+The root route is a fast orientation surface, not the complete textbook. Eight stable `/modules/...` routes own the deeper instruction, exercises, examples, mistakes, drills, and forward path. A shared module shell keeps navigation and metadata consistent while each lesson retains its own teaching surface.
+
+**Change rule:** substantial lesson content belongs to its module route. Keep the doorway concise and do not duplicate full explanations across routes.
+
 ## Change log
 
 - 2026-08-31 — Initial Day 1 lesson architecture and Stagecraft v2 adoption recorded before implementation.
@@ -44,3 +50,4 @@ The course uses compact visualizations for nominal grid precision and terrain ef
 - 2026-08-31 — Added a site-wide social card and bound its metadata to the verified production origin after the initial private deployment resolved that URL.
 - 2026-08-31 — Expanded Day 1 into an eight-module beginner foundation; corrected the orientation lesson to distinguish grid, true, and magnetic north; added Canadian primary-source links, two teaching visualizations, scale/distance practice, terrain forms, bearing concepts, route construction, and a progressive field-practice plan.
 - 2026-08-31 — Added a public-repository README so the validated course can be cloned and run independently of the temporary local preview.
+- 2026-08-31 — Refactored the long course into a lightweight doorway and eight deeper, independently addressable module pages with shared navigation and lesson metadata.

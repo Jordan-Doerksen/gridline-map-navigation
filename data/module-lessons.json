@@ -1,0 +1,443 @@
+{
+  "sheet-basics": {
+    "outcomes": [
+      "Identify the six pieces of marginal information that control how a map is used.",
+      "Explain why edition date, scale, datum, grid, contour interval, and declination are map-specific.",
+      "Use the active legend instead of assuming a colour or symbol is universal."
+    ],
+    "sections": [
+      {
+        "kicker": "The control panel",
+        "title": "Read outside the neatline first",
+        "paragraphs": [
+          "The map body is the picture; the margin is the operating manual. Start with the sheet name and number so you know which area and adjoining sheets you are holding. Then find the edition or update date. A precise-looking road, bridge, trail, or boundary can still be outdated.",
+          "Next identify the representative fraction and scale bar, the contour interval and elevation units, the coordinate grid and datum, and the diagram relating true, grid, and magnetic north. These details govern every distance, coordinate, height, and compass conversion that follows."
+        ],
+        "bullets": [
+          "Identity: sheet name, number, edition, and update date.",
+          "Measurement: scale, scale bar, units, and contour interval.",
+          "Position: grid system, zone or designators, and datum.",
+          "Direction: true, grid, and magnetic north with dated declination information.",
+          "Language: legend, conventional signs, colours, abbreviations, and adjoining sheets."
+        ]
+      },
+      {
+        "kicker": "Trust hierarchy",
+        "title": "Map-specific beats remembered",
+        "paragraphs": [
+          "Canadian NTS maps commonly use familiar colour conventions, but the legend printed for the sheet remains authoritative. The same discipline applies to contour interval, datum, and declination: read the value on the current map instead of importing one from a different sheet or an old memory.",
+          "Treat the edition date as a warning label, not a guarantee. Terrain is durable; human features change. When a map is old, prefer major relief, drainage, and other persistent features over small paths or recent construction when confirming position."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Starting inside the map", "fix": "Run the margin audit before plotting, measuring, or orienting." },
+      { "title": "Treating colour as universal", "fix": "Confirm the sheet legend; monochrome and revised products may differ." },
+      { "title": "Ignoring the edition date", "fix": "Discount changeable human features when the map is old." }
+    ],
+    "drill": {
+      "title": "Five-minute sheet audit",
+      "steps": [
+        "Choose a real topographic map and place it face-up without studying the centre.",
+        "Point to its identity, measurement, position, direction, and language information.",
+        "Say one decision controlled by each item—for example, contour interval controls how you interpret slope.",
+        "Write one feature likely to have changed since publication and one likely to remain reliable."
+      ],
+      "finish": "You are ready to continue when you can complete the audit without searching randomly around the sheet."
+    }
+  },
+  "grid-references": {
+    "outcomes": [
+      "Read eastings before northings and identify the southwest corner of a grid square.",
+      "Split four-, six-, and eight-figure numeric references into equal easting and northing halves.",
+      "Distinguish nominal grid precision from real plotting or measurement accuracy."
+    ],
+    "sections": [
+      {
+        "kicker": "Grid grammar",
+        "title": "Right first, then up",
+        "paragraphs": [
+          "Eastings label vertical grid lines and increase as you move east, or right, across a normally oriented sheet. Northings label horizontal lines and increase as you move north, or up. To name a square, read the easting on its left edge and the northing on its bottom edge.",
+          "A four-figure numeric reference names a one-kilometre square on a one-kilometre grid. It deliberately does not locate a point inside that square. Always split the reference evenly: two easting digits followed by two northing digits."
+        ],
+        "bullets": [
+          "Find the target square.",
+          "Read the numbered vertical line immediately to its left.",
+          "Read the numbered horizontal line immediately below it.",
+          "Say or write the easting pair before the northing pair."
+        ]
+      },
+      {
+        "kicker": "Worked example",
+        "title": "From 3451 to 347516",
+        "paragraphs": [
+          "The square 3451 lies between easting lines 34 and 35 and northing lines 51 and 52. To produce six figures, estimate tenths across that square. A point seven tenths right and six tenths up becomes 347 516, written together as 347516.",
+          "Eight figures repeat the same idea at another decimal place, producing a nominal ten-metre square. The additional digits describe a smaller referenced area. They do not make a rough pencil plot, old map, or imprecise observation magically accurate."
+        ],
+        "bullets": [
+          "3451: 1 km square.",
+          "347516: nominal 100 m square.",
+          "34725168: nominal 10 m square.",
+          "A complete coordinate may also require grid-zone and 100 km square designators."
+        ]
+      },
+      {
+        "kicker": "Communication",
+        "title": "Repeat the frame, not only the digits",
+        "paragraphs": [
+          "Local numeric digits are enough only when everyone is already using the same map, grid zone, and 100 km square. Outside that shared context, include the designators required by the coordinate system and state the datum or map source when ambiguity matters.",
+          "When receiving a reference, split it into equal halves and read it back before plotting. This catches transposed digits and uneven precision before they become navigation errors."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Reading up, then right", "fix": "Physically trace the easting first and say “right, then up.”" },
+      { "title": "Using the far grid lines", "fix": "Four figures use the left and bottom edges of the target square." },
+      { "title": "Overclaiming precision", "fix": "Report nominal square size separately from map and plotting accuracy." }
+    ],
+    "drill": {
+      "title": "Plot and reverse-plot",
+      "steps": [
+        "Plot five four-figure references on a gridded map.",
+        "Choose a point inside each square and refine it to six figures.",
+        "Give the plotted points to a partner or return later and recover them from the references.",
+        "Read every answer back as equal easting and northing halves."
+      ],
+      "finish": "Aim for ten correct plots in a row before increasing precision or speed."
+    }
+  },
+  "scale-distance": {
+    "outcomes": [
+      "Convert paper measurements at 1:50 000 and 1:250 000 into ground distance.",
+      "Measure curved routes in segments instead of relying on straight-line distance.",
+      "Create a personal pace baseline on measured ground and understand what changes it."
+    ],
+    "sections": [
+      {
+        "kicker": "Ratio first",
+        "title": "Scale is a conversion rule",
+        "paragraphs": [
+          "A scale of 1:50 000 means one unit on the map represents fifty thousand of the same units on the ground. One centimetre therefore represents 500 metres, and two centimetres represent one kilometre. At 1:250 000, one centimetre represents 2.5 kilometres.",
+          "Use the representative fraction for arithmetic and the printed scale bar as a practical cross-check. A copied or resized map may no longer match its original paper dimensions, while a scale bar copied with the map changes size with it."
+        ],
+        "bullets": [
+          "1:50 000 → 1 cm = 500 m; 2 cm = 1 km.",
+          "1:250 000 → 1 cm = 2.5 km; 4 cm = 10 km.",
+          "Always attach units to the measurement and result."
+        ]
+      },
+      {
+        "kicker": "Route realism",
+        "title": "The travelled line is longer",
+        "paragraphs": [
+          "A straight-line measurement is useful for comparison, but people move around bends, cliffs, water, dense vegetation, property limits, and other obstacles. Trace the intended line with short ruler segments, a strip of paper, thread, or an appropriate map tool, then add the segments.",
+          "Distance alone does not predict effort. Contour spacing reveals climb and slope; the route plan should also consider surface, crossings, visibility, load, and the number of navigation decisions."
+        ],
+        "bullets": []
+      },
+      {
+        "kicker": "Personal calibration",
+        "title": "Pacing is measured, not guessed",
+        "paragraphs": [
+          "Walk a measured 100-metre line several times at a natural pace and record your double-paces consistently. Average the repeats, then repeat the calibration on a slope and rougher ground. The number belongs to you under those conditions—it is not a universal constant.",
+          "Use pace as one clue alongside time and features. Fatigue, load, vegetation, snow, darkness, and gradient can change the count enough that a single memorized number becomes misleading."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Wrong scale arithmetic", "fix": "Read the fraction and units before touching the ruler." },
+      { "title": "Measuring only straight line", "fix": "Trace the route you intend to travel in short segments." },
+      { "title": "Borrowing someone’s pace count", "fix": "Calibrate your own count over a measured line and repeat it under different conditions." }
+    ],
+    "drill": {
+      "title": "Distance triangle",
+      "steps": [
+        "Measure the same route as a straight line, a segmented travelled line, and a grid-square estimate.",
+        "Convert all three using the printed map scale.",
+        "Explain why the answers differ and which one belongs on a route card.",
+        "Walk a safe measured line and compare pace-count and elapsed-time estimates."
+      ],
+      "finish": "You are ready to continue when your methods agree closely enough to reveal a gross mistake."
+    }
+  },
+  "contours-terrain": {
+    "outcomes": [
+      "Use contour interval and spacing to compare height, slope, and route effort.",
+      "Recognize hills, depressions, valleys, spurs, ridges, and saddles from complete patterns.",
+      "Translate a map route into a simple mental terrain profile before moving."
+    ],
+    "sections": [
+      {
+        "kicker": "Equal elevation",
+        "title": "Every line is one level",
+        "paragraphs": [
+          "A contour joins points at the same elevation. The contour interval printed in the margin is the vertical difference between adjacent contour lines. If the interval is 20 metres, crossing five intervals represents 100 metres of vertical change regardless of how closely the lines are drawn.",
+          "Spacing describes slope only when the contour interval is the same. Close lines compress the vertical change into less horizontal distance and therefore indicate a steeper slope; wide spacing spreads it over more ground."
+        ],
+        "bullets": [
+          "Count intervals, not merely visible lines, when calculating height change.",
+          "Closed contours may show a hill or depression; read labels and legend-defined depression marks.",
+          "The tightest spacing identifies the steepest portion of a slope."
+        ]
+      },
+      {
+        "kicker": "Shape language",
+        "title": "Read relationships, not isolated letters",
+        "paragraphs": [
+          "A valley is low ground between higher sides, often containing drainage; contour bends usually point uphill. A spur projects higher ground away from a ridge and its bends point downhill. Ridges form long crests, saddles form low passes between higher areas, and hills close around increasing elevation.",
+          "The familiar V-shape shortcut is only a starting clue. Confirm which side is higher, how neighbouring contours connect, whether drainage is present, and what the legend says."
+        ],
+        "bullets": []
+      },
+      {
+        "kicker": "Prediction",
+        "title": "Build the walk in your head",
+        "paragraphs": [
+          "Trace the route and narrate the expected sequence: gentle climb, steeper final rise, broad crest, shallow descent, stream crossing. This terrain story gives you checkpoints before you can see the destination.",
+          "If the ground story does not appear in the expected order, stop and investigate. The mismatch is navigation information, not an inconvenience to ignore."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Ignoring contour interval", "fix": "Read the margin before judging or calculating relief." },
+      { "title": "Using one V in isolation", "fix": "Confirm high and low sides, drainage, and surrounding pattern." },
+      { "title": "Planning only in plan view", "fix": "Narrate the elevation profile and expected feature sequence." }
+    ],
+    "drill": {
+      "title": "Contour-to-profile drill",
+      "steps": [
+        "Draw a route line across at least one hill or valley.",
+        "Mark every contour crossing and write its elevation.",
+        "Transfer those crossings to a distance axis and sketch a side profile.",
+        "Describe where pace will slow, where visibility may change, and which feature confirms the crest or low point."
+      ],
+      "finish": "The goal is not artistic accuracy; it is a reliable mental model of the ground sequence."
+    }
+  },
+  "north-compass": {
+    "outcomes": [
+      "Distinguish true, grid, and magnetic north without treating them as interchangeable.",
+      "Read and express a bearing as three figures clockwise from the stated north reference.",
+      "Use dated map-margin or current official information before converting grid and magnetic bearings."
+    ],
+    "sections": [
+      {
+        "kicker": "Three references",
+        "title": "Name the north you mean",
+        "paragraphs": [
+          "True north is the geographic direction toward the pole. Grid north follows the vertical lines of the map grid. Magnetic north is the direction indicated by a magnetic compass. These directions can be close, but they are not automatically identical.",
+          "A bearing is incomplete if its reference is ambiguous. Say grid bearing when it was measured from the map grid and magnetic bearing when it is intended for a compass."
+        ],
+        "bullets": [
+          "000° or 360°: north.",
+          "090°: east.",
+          "180°: south.",
+          "270°: west."
+        ]
+      },
+      {
+        "kicker": "Map to compass",
+        "title": "Declination is local and dated",
+        "paragraphs": [
+          "The angle between grid north and magnetic north varies with location and changes over time. Use the numerical values and annual-change information printed in the map margin or current official geomagnetic information for the location.",
+          "Do not measure the drawn angle in the declination diagram; cartographers may exaggerate it to make the labels readable. Follow the approved conversion method for the map and compass in use, and perform a reasonableness check before moving."
+        ],
+        "bullets": []
+      },
+      {
+        "kicker": "Following direction",
+        "title": "Move landmark to landmark",
+        "paragraphs": [
+          "After setting the required magnetic bearing using the correct conversion, hold the compass level and turn until the needle is aligned as the instrument requires. Sight a clear landmark on the travel line, move to it, and repeat.",
+          "This is more stable than watching the needle while walking. Continue to compare the route with terrain, distance, time, and catching features; a compass supplies direction, not position."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Using map-top as magnetic north", "fix": "Identify the grid-to-magnetic relationship for this map and date." },
+      { "title": "Measuring the diagram drawing", "fix": "Use the printed numerical values; the illustration may be exaggerated." },
+      { "title": "Walking while staring at the needle", "fix": "Sight a landmark on the bearing, move to it, then repeat." }
+    ],
+    "drill": {
+      "title": "Bearing language drill",
+      "steps": [
+        "Call out twelve random three-figure bearings and point to their approximate direction on a dial.",
+        "Measure a grid bearing between two map points and label it explicitly as grid.",
+        "Find the map's declination information and explain what values would be needed before setting a compass.",
+        "On a controlled course, follow short instructed magnetic bearings from landmark to landmark."
+      ],
+      "finish": "Stop if the map’s declination information or the required conversion method is unclear; that uncertainty must be resolved before field use."
+    }
+  },
+  "route-planning": {
+    "outcomes": [
+      "Break a route into legs bounded by recognizable checkpoints.",
+      "Use handrails, attack points, and catching features to make errors detectable and recoverable.",
+      "Record enough distance, direction, terrain, and decision information to rehearse the route before moving."
+    ],
+    "sections": [
+      {
+        "kicker": "Leg structure",
+        "title": "Plan from confirmation to confirmation",
+        "paragraphs": [
+          "A route leg should end at a feature you can recognize, not merely at a distance count. Handrails such as trails, shorelines, streams, or ridges help organize movement. Checkpoints confirm progress, and an attack point gives you a clear place to begin the precise final approach.",
+          "A catching feature beyond the destination tells you that you have travelled too far. Its absence is a design flaw: without one, a small miss can become a long error."
+        ],
+        "bullets": [
+          "Start and end feature for each leg.",
+          "Direction and route distance.",
+          "Expected terrain and feature sequence.",
+          "Attack point, catching feature, and stop condition."
+        ]
+      },
+      {
+        "kicker": "Trade-offs",
+        "title": "Fast, easy, and reliable are different",
+        "paragraphs": [
+          "The shortest map line may cross steep relief, poor visibility, confusing parallel features, or difficult water. A slightly longer handrail route can be faster in practice and far easier to confirm.",
+          "Compare candidate routes by distance, climb, surface, crossings, feature strength, number of decisions, and recovery options. For a beginner, a strong confirmation chain usually matters more than shaving a small distance."
+        ],
+        "bullets": []
+      },
+      {
+        "kicker": "When it stops matching",
+        "title": "Halt before the error grows",
+        "paragraphs": [
+          "If expected terrain, timing, or checkpoints do not appear, stop moving. Protect the last confirmed position, compare what is visible in every direction, review distance and direction travelled, and identify the earliest point where the story stopped matching.",
+          "Do not convert uncertainty into confidence by continuing. Re-establish position from reliable evidence or return to the last confirmed feature when that is the safe, permitted option."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Choosing only the shortest line", "fix": "Compare relief, feature strength, crossings, and recovery options." },
+      { "title": "No catching feature", "fix": "Choose a feature beyond the destination that makes overshoot obvious." },
+      { "title": "Walking through doubt", "fix": "Halt at the first meaningful mismatch and protect the last confirmed position." }
+    ],
+    "drill": {
+      "title": "Two-route comparison",
+      "steps": [
+        "Choose two safe map points and draw a direct route plus a handrail route.",
+        "Measure distance and estimate climb for both.",
+        "Mark checkpoints, an attack point, a catching feature, and a stop condition.",
+        "Brief both routes aloud, then choose one and defend the decision."
+      ],
+      "finish": "A sound choice explains not only how to reach the destination, but how you will know the plan is still working."
+    }
+  },
+  "field-practice": {
+    "outcomes": [
+      "Progress from tabletop work to familiar-ground practice and then controlled instruction.",
+      "Use a repeatable pre-move, during-move, and lost-procedure routine.",
+      "Keep map-navigation practice inside normal permissions, equipment, weather, and safety limits."
+    ],
+    "sections": [
+      {
+        "kicker": "Progression",
+        "title": "Add one difficulty at a time",
+        "paragraphs": [
+          "Tabletop work isolates map reading: margins, symbols, grids, scale, and contour interpretation. Familiar-park work adds real feature confirmation without demanding remote travel. A controlled course then adds short bearings, pace checks, and time pressure under appropriate instruction.",
+          "Avoid stacking new terrain, poor visibility, long distance, heavy load, solo travel, and unfamiliar compass work in one session. When many variables change together, errors teach very little because the cause is unclear."
+        ],
+        "bullets": [
+          "Table: plot, measure, interpret, and brief.",
+          "Park: orient, confirm obvious features, and narrate the map-ground match.",
+          "Course: add short bearing and pace legs with coaching and known controls."
+        ]
+      },
+      {
+        "kicker": "Moving routine",
+        "title": "Confirm before confidence fades",
+        "paragraphs": [
+          "Before moving, audit the sheet, orient the map, establish position, brief the leg, and name the next checkpoint and catching feature. While moving, compare distance, direction, terrain sequence, time, and features instead of waiting for the destination to appear.",
+          "At every confirmed point, reset the mental story for the next leg. Frequent small confirmations are cheaper than one large recovery."
+        ],
+        "bullets": []
+      },
+      {
+        "kicker": "Boundary",
+        "title": "Practice is not a qualification",
+        "paragraphs": [
+          "Use current authoritative maps, appropriate clothing and equipment, normal trip planning and communications, local access permissions, and a companion for early field practice. Choose an area where a navigation error does not create a safety problem.",
+          "Qualified instruction is the place to learn the approved compass procedures, field standards, and assessments expected in a formal course. The website’s job is to make that instruction easier to absorb—not replace it."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Adding every difficulty at once", "fix": "Keep all but one variable familiar and controlled." },
+      { "title": "Waiting for the destination", "fix": "Confirm position at each expected terrain change and checkpoint." },
+      { "title": "Treating study as qualification", "fix": "Use the course to prepare for coached and assessed field practice." }
+    ],
+    "drill": {
+      "title": "Familiar-loop rehearsal",
+      "steps": [
+        "Choose a permitted route you already know and obtain an appropriate current map.",
+        "Brief three legs with checkpoints and catching features before leaving.",
+        "Walk with a companion, narrating map-to-ground matches without relying on the familiar path alone.",
+        "Afterward, identify one map-reading skill to isolate in the next session."
+      ],
+      "finish": "Finish while the practice is still controlled and successful; difficulty can increase in the next planned session."
+    }
+  },
+  "foundation-check": {
+    "outcomes": [
+      "Explain the core map, grid, terrain, compass, and route concepts without prompts.",
+      "Demonstrate the basic plotting and planning actions at a deliberate pace.",
+      "Identify the skills that still require coached field practice."
+    ],
+    "sections": [
+      {
+        "kicker": "Three levels",
+        "title": "Recognize, explain, demonstrate",
+        "paragraphs": [
+          "Recognition is the lightest level: the term looks familiar. Explanation is stronger: you can describe the rule and its limits in your own words. Demonstration is the useful threshold: you can apply it correctly to a fresh map or exercise without being led through every step.",
+          "Use the checklist honestly. If an item is familiar but not demonstrable, return to that module and complete its drill instead of checking the box."
+        ],
+        "bullets": [
+          "Recognize: identify the term or pattern.",
+          "Explain: state the rule, context, and important limitation.",
+          "Demonstrate: apply it correctly to a new example."
+        ]
+      },
+      {
+        "kicker": "Minimum foundation",
+        "title": "What ‘ready for instruction’ means",
+        "paragraphs": [
+          "You should be able to audit a map sheet, plot and read basic grid references, convert common map distances, interpret major contour patterns, distinguish the three norths, read a three-figure bearing, and construct a simple feature-led route.",
+          "This means you are ready to spend formal instruction on refinement and field execution rather than hearing the vocabulary for the first time. It does not certify independent navigation competence."
+        ],
+        "bullets": []
+      },
+      {
+        "kicker": "Next cycle",
+        "title": "Turn weak items into a practice plan",
+        "paragraphs": [
+          "Choose the two unchecked items with the greatest downstream effect. Grid references, scale, and the three norths are common dependencies, so repair those before attempting faster route work.",
+          "For each weak item, schedule one tabletop drill and one controlled demonstration. Retest with a new example rather than repeating an answer you already remember."
+        ],
+        "bullets": []
+      }
+    ],
+    "mistakes": [
+      { "title": "Checking familiarity", "fix": "Require an explanation or fresh demonstration before marking complete." },
+      { "title": "Racing the basics", "fix": "Accuracy and a repeatable method come before speed." },
+      { "title": "Practising only strengths", "fix": "Use unchecked items to choose the next focused drill." }
+    ],
+    "drill": {
+      "title": "Closed-notes foundation brief",
+      "steps": [
+        "Audit an unfamiliar map sheet aloud.",
+        "Plot one four-figure and one six-figure reference and explain their nominal precision.",
+        "Measure a short route, describe its terrain profile, and identify the three norths.",
+        "Brief a feature-led route with an attack point, catching feature, and stop condition."
+      ],
+      "finish": "Record any hesitation as the next study target. A clean foundation is built by repairing gaps, not hiding them."
+    }
+  }
+}

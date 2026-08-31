@@ -2,20 +2,25 @@
 
 ## Flow
 
-`data/training.json` supplies lesson copy, examples, reference values, and exercise coordinates → focused client components own one exercise domain each → `app/page.tsx` composes the course → Stagecraft layers establish the shared visual system → `app/trainer.css` composes only this product's map, course, and visualization layout.
+`data/training.json` supplies course navigation, exercise values, and reusable examples while `data/module-lessons.json` owns deeper lesson copy → `app/page.tsx` renders the lightweight doorway → `app/modules/[slug]/page.tsx` resolves a lesson and metadata → the shared module shell composes narrative and domain-specific exercise components → Stagecraft layers establish the visual system.
 
 ## Owned surfaces
 
 | Path | Purpose | Safe changes |
 |---|---|---|
 | `data/training.json` | Exercise prompts, target coordinates, and lesson copy | Add or correct beginner exercises without changing UI logic |
-| `app/page.tsx` | Course order, navigation, static lesson composition | Reorder or add approved beginner modules |
+| `data/module-lessons.json` | Per-module objectives, explanations, mistakes, drills, and summaries | Deepen an approved lesson without changing route logic |
+| `app/page.tsx` | Lightweight course doorway and module discovery | Keep orientation concise; link rather than duplicate lessons |
+| `app/modules/[slug]/page.tsx` | Dynamic module routing and per-page metadata | Resolve approved slugs and preserve social metadata boundaries |
+| `components/course/ModuleShell.tsx` | Shared module header, rail, narrative, and previous/next navigation | Improve every lesson's structure consistently |
+| `components/course/ModuleContent.tsx` | Domain-specific diagrams, exercises, and examples per module | Change one module's teaching surface without affecting others |
 | `components/course/GridLab.tsx` | Four-figure grid practice state and answer checking | Add grid targets or feedback paths |
 | `components/course/CourseLabs.tsx` | Contour, scale, compass, and field-card interactions | Add small exercises within the approved syllabus |
 | `components/course/CourseVisuals.tsx` | Precision and elevation/effort charts with text summaries | Adjust verified synthetic datasets or chart annotations |
 | `components/course/TopoMap.tsx` | Accessible synthetic map SVG and its layers | Change the training sheet geometry while preserving answer coordinates |
 | `app/trainer.css` | Original grid, contour, and field-card composition | Maintain the exercise surfaces using existing Stagecraft tokens |
 | `app/trainer-course.css` | Expanded course, chart, module, and responsive composition | Maintain foundation-course layout using existing Stagecraft tokens |
+| `app/module.css` | Shared doorway and deeper module-page composition | Maintain route-level layout and responsive reading flow |
 | `app/stagecraft/` | Owned Stagecraft v2 design-system copy | Sync deliberately from the source repo; preserve layer order and contracts |
 | `app/globals.css` | CSS load order | Keep Stagecraft imports in documented order |
 | `app/layout.tsx` | Site metadata and root document | Metadata and site-wide accessibility only |
@@ -32,4 +37,4 @@
 
 ## Validation
 
-Run `npm run build`. Then exercise one wrong and one correct grid answer, toggle a map layer, answer the contour comparison, verify both scale conversions, change the bearing control, complete/reset the field card, inspect both charts without hover, and confirm the page remains readable at a phone-width viewport.
+Run `npm run build`. Verify `/`, `/modules/grid-references`, `/modules/north-compass`, and `/modules/foundation-check`; then exercise one wrong and one correct grid answer, toggle a map layer, answer the contour comparison, verify both scale conversions, change the bearing control, complete/reset the field card, inspect both charts without hover, and confirm module navigation remains readable at phone width.

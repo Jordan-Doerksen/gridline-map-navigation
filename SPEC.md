@@ -19,9 +19,9 @@ After completing the course, a learner should be able to:
 
 ## Course shape
 
-- One continuous, responsive course surface with eight clearly numbered modules.
-- The first viewport remains an interactive four-figure grid exercise.
-- Lessons favour a rule, a visual explanation, and a quick learner action over long prose.
+- A lightweight course doorway introduces the sequence and links to eight independently addressable module pages.
+- Each module page has a clear outcome, deeper explanation, worked example or visualization, learner action, common-error review, and next-module path.
+- Lessons favour a rule, a visual explanation, and a quick learner action over uninterrupted long prose.
 - Two or more compact data visualizations explain coordinate precision and terrain/route effort.
 - Progress is session-local only; no account, location collection, or persistence.
 
@@ -43,6 +43,8 @@ This is preparation, not qualification. It must not imply that a learner can saf
 ## Acceptance checks
 
 - All eight outcomes above have a corresponding module or exercise.
+- The root page remains a concise orientation surface; full lessons live at stable `/modules/...` routes.
+- Every module route has distinct title/description metadata and previous/next navigation.
 - Existing grid answers remain correct for the illustrated 1 km squares.
 - The course states “right, then up” and distinguishes square identification from point precision.
 - 1:50 000 is shown as 1 cm = 500 m; 1:250 000 as 1 cm = 2.5 km.
@@ -51,6 +53,7 @@ This is preparation, not qualification. It must not imply that a learner can saf
 - At least two visualizations have text equivalents.
 - Keyboard, narrow-screen, reduced-motion, correct-answer, and incorrect-answer paths remain usable.
 - A production build succeeds and the published course's main exercises are verified.
+- The root route plus representative early, middle, and final module routes render successfully.
 
 ## Adversarial gap review
 
@@ -63,4 +66,3 @@ This is preparation, not qualification. It must not imply that a learner can saf
 | Terrain oversimplification | V-shape rule is applied to every contour bend | Pair valley and spur explanations and treat shape plus surrounding relief as the evidence. |
 | Unsafe transfer | Learner treats completion as field readiness | Keep the training-limit panel, safe-practice ladder, and official-source links visible. |
 | Decorative charts | Visuals look impressive but teach nothing | Every chart must answer one course question and include an adjacent plain-language conclusion. |
-

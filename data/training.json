@@ -1,13 +1,13 @@
 {
   "modules": [
-    { "number": "00", "id": "brief", "short": "Brief", "title": "Read the whole sheet", "duration": "10 min" },
-    { "number": "01", "id": "practice", "short": "Grid", "title": "Grid references", "duration": "25 min" },
-    { "number": "02", "id": "scale", "short": "Scale", "title": "Scale and distance", "duration": "20 min" },
-    { "number": "03", "id": "contours", "short": "Terrain", "title": "Contours and landforms", "duration": "25 min" },
-    { "number": "04", "id": "north", "short": "North", "title": "Direction and compass", "duration": "25 min" },
-    { "number": "05", "id": "route", "short": "Route", "title": "Build a route", "duration": "20 min" },
-    { "number": "06", "id": "field", "short": "Field", "title": "Safe field rehearsal", "duration": "30 min" },
-    { "number": "07", "id": "check", "short": "Check", "title": "Foundation check", "duration": "10 min" }
+    { "number": "00", "id": "brief", "slug": "sheet-basics", "short": "Brief", "title": "Read the whole sheet", "duration": "15 min", "summary": "Audit the map margin before trusting anything in the map body." },
+    { "number": "01", "id": "practice", "slug": "grid-references", "short": "Grid", "title": "Grid references", "duration": "35 min", "summary": "Read right then up, and understand what four-, six-, and eight-figure precision actually means." },
+    { "number": "02", "id": "scale", "slug": "scale-distance", "short": "Scale", "title": "Scale and distance", "duration": "30 min", "summary": "Convert paper distance to ground distance and build a personal pacing baseline." },
+    { "number": "03", "id": "contours", "slug": "contours-terrain", "short": "Terrain", "title": "Contours and landforms", "duration": "35 min", "summary": "Turn contour patterns into slopes, valleys, spurs, ridges, saddles, and route choices." },
+    { "number": "04", "id": "north", "slug": "north-compass", "short": "North", "title": "Direction and compass", "duration": "35 min", "summary": "Separate the three norths, read bearings, and use current declination information safely." },
+    { "number": "05", "id": "route", "slug": "route-planning", "short": "Route", "title": "Build a route", "duration": "30 min", "summary": "Plan legs around features that help you confirm progress and recover from errors." },
+    { "number": "06", "id": "field", "slug": "field-practice", "short": "Field", "title": "Safe field rehearsal", "duration": "40 min", "summary": "Move from tabletop practice to a controlled field routine without outrunning your skill." },
+    { "number": "07", "id": "check", "slug": "foundation-check", "short": "Check", "title": "Foundation check", "duration": "15 min", "summary": "Explain and demonstrate the basics before adding complexity." }
   ],
   "mapAudit": [
     { "label": "Identity", "detail": "Sheet name, number, edition, and publication or update date" },

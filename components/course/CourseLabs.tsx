@@ -1,8 +1,25 @@
 'use client';
 
-import { Check, RotateCcw, Route } from 'lucide-react';
+import { Check, RotateCcw, Route, ScanSearch } from 'lucide-react';
 import { SyntheticEvent, useState } from 'react';
 import training from '@/data/training.json';
+
+export function AuditLab() {
+  const [checks, setChecks] = useState<boolean[]>(() => training.mapAudit.map(() => false));
+  const complete = checks.filter(Boolean).length;
+  return (
+    <div className="trainer-audit-lab sc-card sc-card--raised">
+      <div className="trainer-field-title"><div><p className="sc-label sc-label--rule">Active audit</p><h3>Find it on a real sheet.</h3></div><ScanSearch aria-hidden="true" /></div>
+      <p className="sc-card-desc">Do not check from memory. Put a current topographic map beside the lesson and point to the information before marking each item.</p>
+      <div className="trainer-progress-copy"><span className="sc-label">Margin groups found</span><strong>{complete} / {checks.length}</strong></div>
+      <progress className="trainer-native-progress" aria-label="Map margin groups found" max={checks.length} value={complete}>{complete} of {checks.length}</progress>
+      <ul className="trainer-audit-checks">
+        {training.mapAudit.map((item, index) => <li key={item.label}><label aria-label={`Found ${item.label} information`}><input type="checkbox" checked={checks[index]} onChange={() => setChecks((values) => values.map((value, itemIndex) => itemIndex === index ? !value : value))} /><span><strong>{item.label}</strong><small>{item.detail}</small></span></label></li>)}
+      </ul>
+      <button className="sc-btn sc-btn--ghost" type="button" onClick={() => setChecks(training.mapAudit.map(() => false))}><RotateCcw aria-hidden="true" /> Reset audit</button>
+    </div>
+  );
+}
 
 export function ScaleLab() {
   const [scaleValue, setScaleValue] = useState(50000);
