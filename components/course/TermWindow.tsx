@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { BookMarked } from 'lucide-react';
 import glossary from '@/data/glossary.json';
 import lessonTerms from '@/data/lesson-terms.json';
@@ -19,7 +18,7 @@ export function TermWindow({ moduleSlug }: { moduleSlug: string }) {
         <div className="term-window-sections">
           {sections.map((section) => <section key={section.title}><h2>{section.title}</h2><dl>{section.terms.map((entry) => <div key={entry.id}><dt>{entry.term}{entry.abbreviation && <abbr title={entry.term}>{entry.abbreviation}</abbr>}</dt><dd>{entry.definition}</dd></div>)}</dl></section>)}
         </div>
-        <Link href="/glossary">Open the full glossary →</Link>
+        <a href="/glossary">Open the full glossary →</a>
       </details>
     </aside>
   );

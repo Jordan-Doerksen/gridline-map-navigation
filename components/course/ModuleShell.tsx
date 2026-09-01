@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ArrowLeft, ArrowRight, BookOpen, Clock3, ExternalLink, Target } from 'lucide-react';
 import training from '@/data/training.json';
 import lessons from '@/data/module-lessons.json';
@@ -17,14 +16,14 @@ export function ModuleShell({ module, lesson, children }: { module: CourseModule
       <a className="sc-skip" href="#lesson">Skip to lesson</a>
       <header className="sc-bar">
         <div className="sc-bar-in">
-          <Link className="sc-mark" href="/">Grid<b>line</b> / Foundations</Link>
-          <nav className="sc-nav" aria-label="Module navigation"><Link href="/">Course door</Link><Link href="/glossary">Glossary</Link><a href="#drill">Drill</a></nav>
+          <a className="sc-mark" href="/">Grid<b>line</b> / Foundations</a>
+          <nav className="sc-nav" aria-label="Module navigation"><a href="/">Course door</a><a href="/glossary">Glossary</a><a href="#drill">Drill</a></nav>
         </div>
       </header>
 
       <main id="lesson">
         <section className="module-hero sc-wrap" aria-labelledby="module-title">
-          <Link className="module-back" href="/"><ArrowLeft aria-hidden="true" /> All modules</Link>
+          <a className="module-back" href="/"><ArrowLeft aria-hidden="true" /> All modules</a>
           <div className="module-hero-grid">
             <div>
               <p className="sc-label sc-label--rule">Module {module.number} / {module.short}</p>
@@ -40,7 +39,7 @@ export function ModuleShell({ module, lesson, children }: { module: CourseModule
         </section>
 
         <nav className="module-rail sc-wrap" aria-label="All course modules">
-          {training.modules.map((item) => <Link className={item.slug === module.slug ? 'is-current' : ''} aria-current={item.slug === module.slug ? 'page' : undefined} href={`/modules/${item.slug}`} key={item.slug}><span>{item.number}</span><strong>{item.short}</strong></Link>)}
+          {training.modules.map((item) => <a className={item.slug === module.slug ? 'is-current' : ''} aria-current={item.slug === module.slug ? 'page' : undefined} href={`/modules/${item.slug}`} key={item.slug}><span>{item.number}</span><strong>{item.short}</strong></a>)}
         </nav>
 
         <TermWindow moduleSlug={module.slug} />
@@ -86,8 +85,8 @@ export function ModuleShell({ module, lesson, children }: { module: CourseModule
         </section>
 
         <nav className="module-next sc-wrap" aria-label="Continue course">
-          {previous ? <Link href={`/modules/${previous.slug}`}><ArrowLeft aria-hidden="true" /><span><small>Previous</small><strong>{previous.title}</strong></span></Link> : <Link href="/"><ArrowLeft aria-hidden="true" /><span><small>Back to</small><strong>Course door</strong></span></Link>}
-          {next ? <Link className="module-next-forward" href={`/modules/${next.slug}`}><span><small>Next module</small><strong>{next.title}</strong></span><ArrowRight aria-hidden="true" /></Link> : <Link className="module-next-forward" href="/"><span><small>Complete</small><strong>Return to course door</strong></span><ArrowRight aria-hidden="true" /></Link>}
+          {previous ? <a href={`/modules/${previous.slug}`}><ArrowLeft aria-hidden="true" /><span><small>Previous</small><strong>{previous.title}</strong></span></a> : <a href="/"><ArrowLeft aria-hidden="true" /><span><small>Back to</small><strong>Course door</strong></span></a>}
+          {next ? <a className="module-next-forward" href={`/modules/${next.slug}`}><span><small>Next module</small><strong>{next.title}</strong></span><ArrowRight aria-hidden="true" /></a> : <a className="module-next-forward" href="/"><span><small>Complete</small><strong>Return to course door</strong></span><ArrowRight aria-hidden="true" /></a>}
         </nav>
       </main>
 

@@ -65,3 +65,4 @@ Every lesson owns a short, authored sequence of term groups that appears in a co
 - 2026-08-31 — Refactored the long course into a lightweight doorway and eight deeper, independently addressable module pages with shared navigation and lesson metadata.
 - 2026-08-31 — Added a fully worked cabin answer, digit-by-digit speaking cadence, and visible four-, six-, and eight-figure answer shapes before the grid exercise.
 - 2026-08-31 — Replaced overlapping hill contours with a valid connected lower contour and separate higher contours, added per-lesson collapsible term windows, and added the searchable course glossary.
+- 2026-09-01 — Replaced framework-intercepted internal course links with native document navigation after the hosted runtime rendered destinations correctly but failed to follow clicks; disabled the conflicting framework-link lint rule for this intentional compatibility choice.

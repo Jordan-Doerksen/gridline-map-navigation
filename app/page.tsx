@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ArrowRight, BookOpen, CheckCircle2, Compass, Map, MousePointer2, ShieldCheck } from 'lucide-react';
 import training from '@/data/training.json';
 
@@ -9,7 +8,7 @@ export default function Home() {
       <header className="sc-bar">
         <div className="sc-bar-in">
           <a className="sc-mark" href="#top">Grid<b>line</b> / Foundations</a>
-          <nav className="sc-nav" aria-label="Course navigation"><a href="#course">Modules</a><a href="#method">Method</a><Link href="/glossary">Glossary</Link></nav>
+          <nav className="sc-nav" aria-label="Course navigation"><a href="#course">Modules</a><a href="#method">Method</a><a href="/glossary">Glossary</a></nav>
         </div>
       </header>
 
@@ -20,7 +19,7 @@ export default function Home() {
             <h1 id="page-title">Learn the map.<br /><span>Then read the ground.</span></h1>
             <p>Eight focused lessons build the basic language of topographic maps, grids, terrain, direction, and deliberate route planning.</p>
             <div className="door-actions">
-              <Link className="sc-btn sc-btn--primary" href="/modules/sheet-basics">Begin module 00 <ArrowRight aria-hidden="true" /></Link>
+              <a className="sc-btn sc-btn--primary" href="/modules/sheet-basics">Begin module 00 <ArrowRight aria-hidden="true" /></a>
               <a className="sc-btn sc-btn--secondary" href="#course">See the course</a>
             </div>
           </div>
@@ -44,12 +43,12 @@ export default function Home() {
           <ol className="door-module-grid">
             {training.modules.map((module) => (
               <li key={module.slug}>
-                <Link href={`/modules/${module.slug}`}>
+                <a href={`/modules/${module.slug}`}>
                   <div className="door-module-meta"><span>{module.number}</span><small>{module.duration}</small></div>
                   <h3>{module.title}</h3>
                   <p>{module.summary}</p>
                   <strong>Open lesson <ArrowRight aria-hidden="true" /></strong>
-                </Link>
+                </a>
               </li>
             ))}
           </ol>
@@ -73,7 +72,7 @@ export default function Home() {
             <h2 id="start-title">First habit: read the margin before the map.</h2>
             <p>The sheet identity, date, scale, legend, contour interval, grid or datum, and declination information control everything that follows.</p>
           </div>
-          <Link className="door-start-link" href="/modules/sheet-basics"><span><small>Module 00</small><strong>Read the whole sheet</strong></span><ArrowRight aria-hidden="true" /></Link>
+          <a className="door-start-link" href="/modules/sheet-basics"><span><small>Module 00</small><strong>Read the whole sheet</strong></span><ArrowRight aria-hidden="true" /></a>
         </section>
 
         <aside className="door-boundary sc-wrap sc-attention">
